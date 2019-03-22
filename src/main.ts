@@ -5,7 +5,8 @@ import * as ts from "typescript";
 import {
     ClassDeclaration,
     ConstructorDeclaration,
-    MethodDeclaration,
+    FunctionLikeDeclaration,
+    Node as TsNode,
     PropertyDeclaration,
     SourceFile } from "typescript";
 
@@ -63,7 +64,7 @@ function identity<T>(val: T): T {
 
 type ClassFeatures = {
     constructor: Maybe<ConstructorDeclaration>,
-    methods: MethodDeclaration[],
+    methods: FunctionLikeDeclaration[],
     properties: PropertyDeclaration[],
 };
 
@@ -78,7 +79,10 @@ function getClassFeatures(cls: ClassDeclaration): ClassFeatures {
         if (ts.isConstructorDeclaration(feature)) {
             features.constructor = feature;
 
-        } else if (ts.isMethodDeclaration(feature)) {
+        } else if (ts.isMethodDeclaration(feature)
+            || ts.isGetAccessorDeclaration(feature)
+            || ts.isSetAccessorDeclaration(feature)
+        ) {
             features.methods.push(feature);
 
         } else if (ts.isPropertyDeclaration(feature)) {
