@@ -7,6 +7,10 @@
         "type": "git",
         "url": "git+https://github.com/Deskbot/TS-Call-Graph.git"
     },
+    "scripts": {
+        "build": "tsc",
+        "start": "node main"
+    },
     "keywords": [
         "TypeScript"
     ],
@@ -15,5 +19,11 @@
     "bugs": {
         "url": "https://github.com/Deskbot/TS-Call-Graph/issues"
     },
-    "homepage": "https://github.com/Deskbot/TS-Call-Graph#readme"
+    "homepage": "https://github.com/Deskbot/TS-Call-Graph#readme",
+    "devDependencies": {
+        "@types/node": "^11.11.6"
+    },
+    "dependencies": {
+        "typescript": "^3.3.4000"
+    }
 }
