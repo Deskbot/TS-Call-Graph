@@ -52,9 +52,9 @@ function main() {
 }
 
 function extractClassDeclaration(file: SourceFile, className: string): Maybe<ClassDeclaration> {
-    return (file.statements
+    return file.statements
         .filter(identity)
-        .filter((stmt) => stmt.kind === ts.SyntaxKind.ClassDeclaration) as ClassDeclaration[])
+        .filter(ts.isClassDeclaration)
         .find((classDec) => classDec.name !== undefined && classDec.name.text === className);
 }
 
