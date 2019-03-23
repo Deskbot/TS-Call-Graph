@@ -9,7 +9,7 @@
     },
     "scripts": {
         "build": "tsc",
-        "start": "node main"
+        "start": "node out/main"
     },
     "keywords": [
         "TypeScript"
