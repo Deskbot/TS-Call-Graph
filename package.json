@@ -9,7 +9,7 @@
     },
     "scripts": {
         "build": "tsc",
-        "start": "node out/main"
+        "start:dev": "node -r source-map-support/register out/main"
     },
     "keywords": [
         "TypeScript"
@@ -24,6 +24,7 @@
         "@types/node": "^11.11.6"
     },
     "dependencies": {
+        "source-map-support": "^0.5.11",
         "typescript": "^3.3.4000"
     }
 }
