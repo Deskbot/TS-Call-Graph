@@ -100,5 +100,6 @@ function parseFile(targetFilePath: string): SourceFile {
         path.basename(targetFilePath),
         targetFileData,
         ts.ScriptTarget.ES2017,
+        true,
     );
 }
