@@ -41,26 +41,32 @@ function main() {
         return;
     }
 
-    const { constructor, methods, properties } = getClassFeatures(targetClassNode);
+    const featuresOfTargetClass = getClassFeatures(targetClassNode);
+
+    const map = buildMapOfUsedProperties(featuresOfTargetClass);
+
+    console.log(map);
+
+    // build a d3 config object
+}
+
+function buildMapOfUsedProperties(classFeatures: ClassFeatures): OneToManyMap<string, string> {
+    const { constructor, methods, properties } = classFeatures;
 
     const map = new OneToManyMap<string, string>();
 
-    // register constructor -> field
     if (constructor) {
         for (const property of getUsedProperties(constructor)) {
             map.set("constructor", property);
         }
     }
 
-    // register constructor -> method
     // register method -> field
     // reigst method -> method
     // accessors -> field
     // accessors -> method
 
-    console.log(map);
-
-    // build a d3 config object
+    return map;
 }
 
 function extractClassDeclaration(file: SourceFile, className: string): Maybe<ClassDeclaration> {
