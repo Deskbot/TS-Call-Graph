@@ -10,6 +10,9 @@ import {
     PropertyDeclaration,
     SourceFile } from "typescript";
 
+import { OneToManyMap } from "./lib/OneToManyMap";
+import { depthFirstSearch } from "./lib/traversal";
+
 main();
 
 type Maybe<T> = T | undefined;
@@ -40,7 +43,8 @@ function main() {
 
     const { constructor, methods, properties } = getClassFeatures(targetClassNode);
 
-    // make map
+    const map = new OneToManyMap<string, string>();
+
     // register constructor -> field
     // register constructor -> method
     // register method -> field
