@@ -46,11 +46,19 @@ function main() {
     const map = new OneToManyMap<string, string>();
 
     // register constructor -> field
+    if (constructor) {
+        for (const property of getUsedProperties(constructor)) {
+            map.set("constructor", property);
+        }
+    }
+
     // register constructor -> method
     // register method -> field
     // reigst method -> method
     // accessors -> field
     // accessors -> method
+
+    console.log(map);
 
     // build a d3 config object
 }
@@ -95,6 +103,20 @@ function getClassFeatures(cls: ClassDeclaration): ClassFeatures {
     }
 
     return features;
+}
+
+function* getUsedProperties(node: TsNode): Iterable<string> {
+    const astNodeStream = depthFirstSearch(node, (node) => node.getChildren());
+
+    for (const astNode of astNodeStream) {
+        if (ts.isPropertyAccessExpression(astNode)) {
+            const accessorCode = astNode.getText();
+            const accessorPath = accessorCode.split(".");
+            if (accessorPath[0] === "this" || accessorPath[0] === "super") {
+                yield accessorPath[0] + "." + accessorPath[1];
+            }
+        }
+    }
 }
 
 function parseFile(targetFilePath: string): SourceFile {
