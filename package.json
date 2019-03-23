@@ -9,7 +9,7 @@
     },
     "scripts": {
         "build": "tsc",
-        "start:dev": "node -r source-map-support/register out/main"
+        "start": "node -r source-map-support/register out/main"
     },
     "keywords": [
         "TypeScript"
