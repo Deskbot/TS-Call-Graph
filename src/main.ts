@@ -87,7 +87,7 @@ function getClassFeatures(cls: ClassDeclaration): ClassFeatures {
         methods: [],
     };
 
-    for (let feature of cls.members) {
+    for (const feature of cls.members) {
         if (ts.isConstructorDeclaration(feature)) {
             features.constructor = feature;
 
