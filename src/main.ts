@@ -32,8 +32,6 @@ function main() {
     }
 
     const parsedFile = parseFile(targetFilePath);
-
-    // find given class
     const targetClassNode = extractClassDeclaration(parsedFile, targetClass);
 
     if (targetClassNode === undefined) {
@@ -61,10 +59,13 @@ function buildMapOfUsedProperties(classFeatures: ClassFeatures): OneToManyMap<st
         }
     }
 
-    // register method -> field
-    // reigst method -> method
-    // accessors -> field
-    // accessors -> method
+    for (const method of methods) {
+        let methodName = method.name ? method.name!.getText() : `anonymous method ${Math.random()}`;
+
+        for (const property of getUsedProperties(method)) {
+            map.set(methodName, property);
+        }
+    }
 
     return map;
 }
