@@ -27,30 +27,33 @@ function main() {
         targetFilePath = process.cwd() + "/" + args[0];
         targetClass = args[1];
     } catch (ignore) {
-        console.error("Usage: arg1: target file path, arg2: target class name");
-        return;
+        throw new MyError("Usage: arg1: target file path, arg2: target class name");
     }
 
+    const map = createFieldUsageMapForClassInFile(targetFilePath, targetClass);
+
+    console.log(map);
+
+    // build a d3 config object
+}
+
+function createFieldUsageMapForClassInFile(targetFilePath: string, targetClass: string): OneToManyMap<string, string> {
     const parsedFile = parseFile(targetFilePath);
     const targetClassNode = extractClassDeclaration(parsedFile, targetClass);
 
     if (targetClassNode === undefined) {
-        console.error(`Target class declaration (${targetClass}) could not be found.`);
-        return;
+        throw new MyError(`Target class declaration (${targetClass}) could not be found.`);
     }
 
     const featuresOfTargetClass = getClassFeatures(targetClassNode);
 
-    const map = buildMapOfUsedProperties(featuresOfTargetClass);
-
-    console.log(map);
-
     // want to include all properties on the eventual graph
-    for (const property of featuresOfTargetClass.properties) {
-        map.setKey(property.name.getText());
-    }
+    // but it shouldn't be done this way
+    // for (const property of featuresOfTargetClass.properties) {
+    //     property.name.getText();
+    // }
 
-    // build a d3 config object
+    return buildMapOfUsedProperties(featuresOfTargetClass);
 }
 
 function buildMapOfUsedProperties(classFeatures: ClassFeatures): OneToManyMap<string, string> {
@@ -141,3 +144,5 @@ function parseFile(targetFilePath: string): SourceFile {
         true,
     );
 }
+
+class MyError extends Error {}
