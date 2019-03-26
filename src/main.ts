@@ -68,7 +68,7 @@ function boolify<T>(val: T): boolean {
 }
 
 function buildMapOfUsedProperties(classFeatures: ClassFeatures): PropertyToMethodsMap {
-    const { constructor, methods, properties } = classFeatures;
+    const { constructor, methods } = classFeatures;
 
     const map = new OneToManyMap<string, string>();
 
