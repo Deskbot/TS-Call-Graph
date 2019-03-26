@@ -45,6 +45,11 @@ function main() {
 
     console.log(map);
 
+    // want to include all properties on the eventual graph
+    for (const property of featuresOfTargetClass.properties) {
+        map.setKey(property.name.getText());
+    }
+
     // build a d3 config object
 }
 

@@ -45,6 +45,17 @@ export class OneToManyMap<K,V> {
         return this;
     }
 
+    /**
+     * A key can be paired with an empty set.
+     * If the given key is not already in this map, create a mapping from the given key to an empty set.
+     * @param k The key to add to the keyset if it doesn't already exist.
+     */
+    setKey(k: K) {
+        if (!this.map.has(k)) {
+            this.map.set(k, new Set());
+        }
+    }
+
     toMap() {
         return this.map;
     }
