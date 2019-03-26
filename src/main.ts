@@ -79,7 +79,7 @@ function buildMapOfUsedProperties(classFeatures: ClassFeatures): PropertyToMetho
     }
 
     for (const method of methods) {
-        let methodName = method.name ? method.name!.getText() : `anonymous method ${Math.random()}`;
+        let methodName = method.name ? method.name!.getText() : `anonymous method ${Math.random()}`; // not sure when this can happen
 
         for (const property of getUsedProperties(method)) {
             map.set(property, methodName);
