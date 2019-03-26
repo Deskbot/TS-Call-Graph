@@ -13,6 +13,8 @@ import {
 import { OneToManyMap } from "./lib/OneToManyMap";
 import { depthFirstSearch } from "./lib/traversal";
 
+type PropertyToMethodsMap = OneToManyMap<string, string>;
+
 main();
 
 type Maybe<T> = T | undefined;
@@ -37,7 +39,7 @@ function main() {
     // build a d3 config object
 }
 
-function createFieldUsageMapForClassInFile(targetFilePath: string, targetClass: string): OneToManyMap<string, string> {
+function createFieldUsageMapForClassInFile(targetFilePath: string, targetClass: string): PropertyToMethodsMap {
     const parsedFile = parseFile(targetFilePath);
     const targetClassNode = extractClassDeclaration(parsedFile, targetClass);
 
@@ -47,16 +49,17 @@ function createFieldUsageMapForClassInFile(targetFilePath: string, targetClass: 
 
     const featuresOfTargetClass = getClassFeatures(targetClassNode);
 
-    // want to include all properties on the eventual graph
-    // but it shouldn't be done this way
-    // for (const property of featuresOfTargetClass.properties) {
-    //     property.name.getText();
-    // }
+    const map = buildMapOfUsedProperties(featuresOfTargetClass);
 
-    return buildMapOfUsedProperties(featuresOfTargetClass);
+    // want to include all properties on the eventual graph even if nothing maps to them
+    for (const property of featuresOfTargetClass.properties) {
+        map.setKey(property.name.getText());
+    }
+
+    return map;
 }
 
-function buildMapOfUsedProperties(classFeatures: ClassFeatures): OneToManyMap<string, string> {
+function buildMapOfUsedProperties(classFeatures: ClassFeatures): PropertyToMethodsMap {
     const { constructor, methods, properties } = classFeatures;
 
     const map = new OneToManyMap<string, string>();
@@ -71,7 +74,7 @@ function buildMapOfUsedProperties(classFeatures: ClassFeatures): OneToManyMap<st
         let methodName = method.name ? method.name!.getText() : `anonymous method ${Math.random()}`;
 
         for (const property of getUsedProperties(method)) {
-            map.set(methodName, property);
+            map.set(property, methodName);
         }
     }
 
