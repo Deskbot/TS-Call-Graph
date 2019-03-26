@@ -13,11 +13,15 @@ import {
 import { OneToManyMap } from "./lib/OneToManyMap";
 import { depthFirstSearch } from "./lib/traversal";
 
+type ClassFeatures = {
+    constructor: Maybe<ConstructorDeclaration>,
+    methods: FunctionLikeDeclaration[],
+    properties: PropertyDeclaration[],
+};
+type Maybe<T> = T | undefined;
 type PropertyToMethodsMap = OneToManyMap<string, string>;
 
 main();
-
-type Maybe<T> = T | undefined;
 
 function main() {
     let args: string[];
@@ -32,14 +36,14 @@ function main() {
         throw new MyError("Usage: arg1: target file path, arg2: target class name");
     }
 
-    const map = createFieldUsageMapForClassInFile(targetFilePath, targetClass);
+    const map = createPropertyUsageMapForClassInFile(targetFilePath, targetClass);
 
     console.log(map);
 
     // build a d3 config object
 }
 
-function createFieldUsageMapForClassInFile(targetFilePath: string, targetClass: string): PropertyToMethodsMap {
+function createPropertyUsageMapForClassInFile(targetFilePath: string, targetClass: string): PropertyToMethodsMap {
     const parsedFile = parseFile(targetFilePath);
     const targetClassNode = extractClassDeclaration(parsedFile, targetClass);
 
@@ -57,6 +61,10 @@ function createFieldUsageMapForClassInFile(targetFilePath: string, targetClass: 
     }
 
     return map;
+}
+
+function boolify<T>(val: T): boolean {
+    return !!val;
 }
 
 function buildMapOfUsedProperties(classFeatures: ClassFeatures): PropertyToMethodsMap {
@@ -83,20 +91,10 @@ function buildMapOfUsedProperties(classFeatures: ClassFeatures): PropertyToMetho
 
 function extractClassDeclaration(file: SourceFile, className: string): Maybe<ClassDeclaration> {
     return file.statements
-        .filter(identity)
+        .filter(boolify)
         .filter(ts.isClassDeclaration)
         .find((classDec) => classDec.name !== undefined && classDec.name.text === className);
 }
-
-function identity<T>(val: T): T {
-    return val;
-}
-
-type ClassFeatures = {
-    constructor: Maybe<ConstructorDeclaration>,
-    methods: FunctionLikeDeclaration[],
-    properties: PropertyDeclaration[],
-};
 
 function getClassFeatures(cls: ClassDeclaration): ClassFeatures {
     const features: ClassFeatures = {
