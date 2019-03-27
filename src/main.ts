@@ -37,8 +37,8 @@ function main() {
         throw new MyError("Usage: arg1: target file path, arg2: target class name");
     }
 
-    const thing = new ClassDeclarationExtractor();
-    const map = thing.createPropertyUsageMapForClassInFile(targetFilePath, targetClass);
+    const thing = new ClassDeclarationExtractor(targetFilePath, targetClass);
+    const map = thing.createPropertyUsageMapForClassInFile();
 
     console.log(map);
 
@@ -46,12 +46,22 @@ function main() {
 }
 
 class ClassDeclarationExtractor {
-    createPropertyUsageMapForClassInFile(targetFilePath: string, targetClass: string): PropertyToMethodsMap {
-        const parsedFile = this.parseFile(targetFilePath);
-        const targetClassNode = this.extractClassDeclaration(parsedFile, targetClass);
+    private propertyFactory: PropertyFactory;
+    private targetClass: string;
+    private targetFilePath: string;
+
+    constructor(targetFilePath: string, targetClass: string) {
+        this.propertyFactory = new PropertyFactory();
+        this.targetClass = targetClass;
+        this.targetFilePath = targetFilePath
+    }
+
+    createPropertyUsageMapForClassInFile(): PropertyToMethodsMap {
+        const parsedFile = this.parseFile(this.targetFilePath);
+        const targetClassNode = this.extractClassDeclaration(parsedFile, this.targetClass);
 
         if (targetClassNode === undefined) {
-            throw new MyError(`Target class declaration (${targetClass}) could not be found.`);
+            throw new MyError(`Target class declaration (${this.targetClass}) could not be found.`);
         }
 
         const featuresOfTargetClass = this.getClassFeatures(targetClassNode);
