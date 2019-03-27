@@ -20,7 +20,7 @@ type ClassFeatures = {
     properties: PropertyDeclaration[],
 };
 type Maybe<T> = T | undefined;
-type PropertyToMethodsMap = OneToManyMap<string, string>;
+type PropertyToMethodsMap = OneToManyMap<Property, Property>;
 
 main();
 
@@ -70,7 +70,7 @@ class ClassDeclarationExtractor {
 
         // want to include all properties on the eventual graph even if nothing maps to them
         for (const property of featuresOfTargetClass.properties) {
-            map.setKey(property.name.getText());
+            map.setKey(this.propertyFactory.make(property.name.getText(), property.modifiers, PropertyType.Field));
         }
 
         return map;
@@ -79,11 +79,12 @@ class ClassDeclarationExtractor {
     private buildMapOfUsedProperties(classFeatures: ClassFeatures): PropertyToMethodsMap {
         const { constructor, methods } = classFeatures;
 
-        const map = new OneToManyMap<string, string>();
+        const map = new OneToManyMap<Property, Property>();
 
         if (constructor) {
+            const constr = this.propertyFactory.make("constructor", constructor.modifiers, PropertyType.Method);
             for (const property of this.getUsedProperties(constructor)) {
-                map.set("constructor", property);
+                map.set(constr, property);
             }
         }
 
@@ -91,7 +92,7 @@ class ClassDeclarationExtractor {
             let methodName = method.name ? method.name!.getText() : `anonymous method ${Math.random()}`; // not sure when this can happen
 
             for (const property of this.getUsedProperties(method)) {
-                map.set(property, methodName);
+                map.set(property, this.propertyFactory.make(methodName, method.modifiers, PropertyType.Method));
             }
         }
 
@@ -130,7 +131,7 @@ class ClassDeclarationExtractor {
         return features;
     }
 
-    private *getUsedProperties(node: TsNode): Iterable<string> {
+    private *getUsedProperties(node: TsNode): Iterable<Property> {
         const astNodeStream = depthFirstSearch(node, (node) => node.getChildren());
 
         for (const astNode of astNodeStream) {
@@ -138,7 +139,8 @@ class ClassDeclarationExtractor {
                 const accessorCode = astNode.getText();
                 const accessorPath = accessorCode.split(".");
                 if (accessorPath[0] === "this" || accessorPath[0] === "super") {
-                    yield accessorPath[0] + "." + accessorPath[1];
+                    console.log(accessorPath[1], astNode.modifiers);
+                    yield this.propertyFactory.make(accessorPath[1], astNode.modifiers, PropertyType.Field);
                 }
             }
         }
