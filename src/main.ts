@@ -37,8 +37,8 @@ function main() {
         throw new MyError("Usage: arg1: target file path, arg2: target class name");
     }
 
-    const thing = new ClassDeclarationExtractor(targetFilePath, targetClass);
-    const map = thing.createPropertyUsageMapForClassInFile();
+    const declarationExtractor = new ClassDeclarationExtractor(targetFilePath, targetClass);
+    const map = declarationExtractor.createPropertyUsageMap();
 
     console.log(map);
 
@@ -56,7 +56,7 @@ class ClassDeclarationExtractor {
         this.targetFilePath = targetFilePath
     }
 
-    createPropertyUsageMapForClassInFile(): PropertyToMethodsMap {
+    createPropertyUsageMap(): PropertyToMethodsMap {
         const parsedFile = this.parseFile(this.targetFilePath);
         const targetClassNode = this.extractClassDeclaration(parsedFile, this.targetClass);
 
