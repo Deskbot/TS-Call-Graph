@@ -166,8 +166,9 @@ enum PropertyType {
 class Property {
     constructor(
         public readonly name: string,
-        public readonly modifiers: ts.ModifiersArray,
-        public readonly propertyType: PropertyType) {}
+        public readonly modifiers: ts.ModifiersArray | undefined,
+        public readonly propertyType: PropertyType
+    ) {}
 }
 
 /**
