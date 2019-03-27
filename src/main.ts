@@ -193,9 +193,9 @@ class PropertyFactory {
      * @param modifiers The Property's modifiers
      * @param propertyType The type of Property
      */
-    make(name: string, modifiers: ts.ModifiersArray, propertyType: PropertyType) {
+    make(name: string, modifiers: ts.ModifiersArray | undefined, propertyType: PropertyType): Property {
         if (this.propertiesMade.has(name)) {
-            return this.propertiesMade.get(name);
+            return this.propertiesMade.get(name)!;
         }
 
         const property = new Property(name, modifiers, propertyType);
