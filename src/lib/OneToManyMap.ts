@@ -1,5 +1,5 @@
 export class OneToManyMap<K,V> {
-    private map: Map<K,Set<V>>;
+    private readonly map: Map<K,Set<V>>;
 
     constructor(MapMaker?: MapConstructor) {
         this.map = MapMaker ? new MapMaker() : new Map();

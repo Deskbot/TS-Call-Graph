@@ -76,7 +76,7 @@ class ClassDeclarationExtractor {
         return map;
     }
 
-    buildMapOfUsedProperties(classFeatures: ClassFeatures): PropertyToMethodsMap {
+    private buildMapOfUsedProperties(classFeatures: ClassFeatures): PropertyToMethodsMap {
         const { constructor, methods } = classFeatures;
 
         const map = new OneToManyMap<string, string>();
@@ -98,14 +98,14 @@ class ClassDeclarationExtractor {
         return map;
     }
 
-    extractClassDeclaration(file: SourceFile, className: string): Maybe<ClassDeclaration> {
+    private extractClassDeclaration(file: SourceFile, className: string): Maybe<ClassDeclaration> {
         return file.statements
             .filter(boolify)
             .filter(ts.isClassDeclaration)
             .find((classDec) => classDec.name !== undefined && classDec.name.text === className);
     }
 
-    getClassFeatures(cls: ClassDeclaration): ClassFeatures {
+    private getClassFeatures(cls: ClassDeclaration): ClassFeatures {
         const features: ClassFeatures = {
             constructor: undefined,
             properties: [],
@@ -130,7 +130,7 @@ class ClassDeclarationExtractor {
         return features;
     }
 
-    *getUsedProperties(node: TsNode): Iterable<string> {
+    private *getUsedProperties(node: TsNode): Iterable<string> {
         const astNodeStream = depthFirstSearch(node, (node) => node.getChildren());
 
         for (const astNode of astNodeStream) {
@@ -144,7 +144,7 @@ class ClassDeclarationExtractor {
         }
     }
 
-    parseFile(targetFilePath: string): SourceFile {
+    private parseFile(targetFilePath: string): SourceFile {
         const targetFileData = fs.readFileSync(targetFilePath).toString();
 
         return ts.createSourceFile(
