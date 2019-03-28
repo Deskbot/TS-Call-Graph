@@ -30,7 +30,7 @@ export class ClassDeclarationExtractor {
         this.targetFilePath = targetFilePath
     }
 
-    createPropertyUsageMap(): PropertyToMethodsMap {
+    public createPropertyUsageMap(): PropertyToMethodsMap {
         const parsedFile = this.parseFile(this.targetFilePath);
         const targetClassNode = this.extractClassDeclaration(parsedFile, this.targetClass);
 
@@ -112,7 +112,7 @@ export class ClassDeclarationExtractor {
             if (ts.isPropertyAccessExpression(astNode)) {
                 const accessorCode = astNode.getText();
                 const accessorPath = accessorCode.split(".");
-                if (accessorPath[0] === "this" || accessorPath[0] === "super") {
+                if (accessorPath[0] === "this" || accessorPath[0] === "super" || accessorPath[0] === this.targetClass) {
                     yield this.propertyFactory.make(accessorPath[1], astNode.modifiers, PropertyType.Field);
                 }
             }
