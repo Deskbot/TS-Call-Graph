@@ -1,9 +1,4 @@
 import * as process from "process";
-import {
-    ConstructorDeclaration,
-    FunctionLikeDeclaration,
-    PropertyDeclaration
-} from "typescript";
 import { ClassDeclarationExtractor } from "./lib/ClassDeclarationExtractor";
 import { MyError } from "./lib/error";
 

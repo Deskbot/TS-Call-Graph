@@ -14,25 +14,22 @@ import { PropertyType, Property } from "./Property";
 import { depthFirstSearch } from "./traversal";
 
 type ClassFeatures = {
-    constructor: Maybe<ts.ConstructorDeclaration>,
-    methods: ts.FunctionLikeDeclaration[],
-    properties: ts.PropertyDeclaration[],
+    constructor: Maybe<Property>,
+    methods: Property[],
+    field: Property[],
 };
 
-export type PropertyToMethodsMap = Digraph<Property>;
-
 export class ClassDeclarationExtractor {
-    private propertyUsage: PropertyToMethodsMap;
+    private allProperties: Map<string, Property>;
+    private featuresOfTargetClass: ClassFeatures;
+    private propertyUsage: Maybe<Digraph<Property>>;
     private targetClass: string;
     private targetFilePath: string;
 
     constructor(targetFilePath: string, targetClass: string) {
-        this.propertyUsage = new Digraph<Property>();
         this.targetClass = targetClass;
         this.targetFilePath = targetFilePath
-    }
 
-    public createPropertyUsageMap(): PropertyToMethodsMap {
         const parsedFile = this.parseFile(this.targetFilePath);
         const targetClassNode = this.extractClassDeclaration(parsedFile, this.targetClass);
 
@@ -40,37 +37,45 @@ export class ClassDeclarationExtractor {
             throw new MyError(`Target class declaration (${this.targetClass}) could not be found.`);
         }
 
-        const featuresOfTargetClass = this.getClassFeatures(targetClassNode);
+        this.featuresOfTargetClass = this.getClassFeatures(targetClassNode);
 
-        const allProperties = this.registerAllFeatures(featuresOfTargetClass);
+        this.allProperties = this.registerAllFeatures(this.featuresOfTargetClass);
+    }
 
-        for (const property of allProperties.values()) {
-            this.propertyUsage.addNode(property);
+    public createPropertyUsageMap(): Digraph<Property> {
+        if (!this.propertyUsage) {
+            this.propertyUsage = new Digraph();
+
+            if (this.featuresOfTargetClass.constructor) {
+                for (const usedProperty of this.getUsedProperties(this.featuresOfTargetClass.constructor.declaration)) {
+                    this.propertyUsage.addEdge(this.featuresOfTargetClass.constructor, usedProperty);
+                }
+            }
+
+            for (const method of this.featuresOfTargetClass.methods) {
+                for (const usedProperty of this.getUsedProperties(method.declaration)) {
+                    this.propertyUsage.addEdge(method, usedProperty);
+                }
+            }
         }
+
         return this.propertyUsage;
     }
 
     private registerAllFeatures(featuresOfTargetClass: ClassFeatures): Map<string, Property> {
         const allProperties = new Map<string, Property>();
 
-        for (const property of featuresOfTargetClass.properties) {
-            allProperties.set(
-                property.name.getText(),
-                new Property(property.name.getText(), property.modifiers, PropertyType.Field),
-            );
+        for (const field of featuresOfTargetClass.field) {
+            allProperties.set(field.name, field);
         }
 
         if (featuresOfTargetClass.constructor) {
-            allProperties.set(
-                "constructor",
-                new Property("constructor", featuresOfTargetClass.constructor.modifiers, PropertyType.Method),
-            );
+            allProperties.set(featuresOfTargetClass.constructor.name, featuresOfTargetClass.constructor);
         }
 
         for (const method of featuresOfTargetClass.methods) {
-            const methodName = method.name ? method.name!.getText() : `anonymous method ${Math.random()}`; // not sure when this can happen
-            const methodProperty = new Property(methodName, method.modifiers, PropertyType.Method);
-            allProperties.set(methodName, methodProperty);
+            allProperties.set(method.name, method);
+            console.log(method);
         }
 
         return allProperties;
@@ -86,22 +91,23 @@ export class ClassDeclarationExtractor {
     private getClassFeatures(cls: ClassDeclaration): ClassFeatures {
         const features: ClassFeatures = {
             constructor: undefined,
-            properties: [],
+            field: [],
             methods: [],
         };
 
         for (const feature of cls.members) {
             if (ts.isConstructorDeclaration(feature)) {
-                features.constructor = feature;
+                features.constructor = new Property("constructor", feature.modifiers, PropertyType.Method, feature);
 
             } else if (ts.isMethodDeclaration(feature)
                 || ts.isGetAccessorDeclaration(feature)
                 || ts.isSetAccessorDeclaration(feature)
             ) {
-                features.methods.push(feature);
+                const methodName = feature.name ? feature.name!.getText() : `anonymous method ${Math.random()}`; // not sure when this can happen
+                features.methods.push(new Property(methodName, feature.modifiers, PropertyType.Method, feature));
 
             } else if (ts.isPropertyDeclaration(feature)) {
-                features.properties.push(feature);
+                features.field.push(new Property(feature.name.getText(), feature.modifiers, PropertyType.Field, feature));
             }
         }
 
@@ -115,8 +121,10 @@ export class ClassDeclarationExtractor {
             if (ts.isPropertyAccessExpression(astNode)) {
                 const accessorCode = astNode.getText();
                 const accessorPath = accessorCode.split(".");
-                if (accessorPath[0] === "this" || accessorPath[0] === "super" || accessorPath[0] === this.targetClass) {
-                    yield new Property(accessorPath[1], astNode.modifiers, PropertyType.Field);
+                const prefix = accessorPath[0];
+                const name = accessorPath[1];
+                if (prefix === "this" || prefix === "super" || prefix === this.targetClass) {
+                    yield this.allProperties.get(name)!;
                 }
             }
         }

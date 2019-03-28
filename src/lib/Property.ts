@@ -9,6 +9,7 @@ export class Property {
     constructor(
         public readonly name: string,
         public readonly modifiers: ts.ModifiersArray | undefined,
-        public readonly propertyType: PropertyType
+        public readonly propertyType: PropertyType,
+        public readonly declaration: ts.Node
     ) {}
 }
