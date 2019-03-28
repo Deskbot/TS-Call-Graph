@@ -66,10 +66,12 @@ export class ClassDeclarationExtractor {
 
     private findPropertiesInMethods(methods: ts.FunctionLikeDeclaration[]) {
         for (const method of methods) {
-            let methodName = method.name ? method.name!.getText() : `anonymous method ${Math.random()}`; // not sure when this can happen
+            const methodName = method.name ? method.name!.getText() : `anonymous method ${Math.random()}`; // not sure when this can happen
+            const methodProperty = this.propertyFactory.make(methodName, method.modifiers, PropertyType.Method);
+            this.usedProperties.setKey(methodProperty);
 
             for (const property of this.getUsedProperties(method)) {
-                this.usedProperties.set(property, this.propertyFactory.make(methodName, method.modifiers, PropertyType.Method));
+                this.usedProperties.set(property, methodProperty);
             }
         }
     }
