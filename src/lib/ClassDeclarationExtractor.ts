@@ -44,7 +44,11 @@ export class ClassDeclarationExtractor {
 
         const featuresOfTargetClass = this.getClassFeatures(targetClassNode);
 
-        this.buildMapOfUsedProperties(featuresOfTargetClass);
+        if (featuresOfTargetClass.constructor) {
+            this.findPropertiesInConstructor(featuresOfTargetClass.constructor);
+        }
+
+        this.findPropertiesInMethods(featuresOfTargetClass.methods);
 
         // want to include all properties on the eventual graph even if nothing maps to them
         for (const property of featuresOfTargetClass.properties) {
@@ -54,16 +58,16 @@ export class ClassDeclarationExtractor {
         return this.usedProperties;
     }
 
-    private buildMapOfUsedProperties(classFeatures: ClassFeatures): PropertyToMethodsMap {
-        const { constructor, methods } = classFeatures;
-
+    private findPropertiesInConstructor(constructor: ts.ConstructorDeclaration) {
         if (constructor) {
             const constr = this.propertyFactory.make("constructor", constructor.modifiers, PropertyType.Method);
             for (const property of this.getUsedProperties(constructor)) {
                 this.usedProperties.set(property, constr);
             }
         }
+    }
 
+    private findPropertiesInMethods(methods: ts.FunctionLikeDeclaration[]) {
         for (const method of methods) {
             let methodName = method.name ? method.name!.getText() : `anonymous method ${Math.random()}`; // not sure when this can happen
 
@@ -71,8 +75,6 @@ export class ClassDeclarationExtractor {
                 this.usedProperties.set(property, this.propertyFactory.make(methodName, method.modifiers, PropertyType.Method));
             }
         }
-
-        return this.usedProperties;
     }
 
     private extractClassDeclaration(file: SourceFile, className: string): Maybe<ClassDeclaration> {
