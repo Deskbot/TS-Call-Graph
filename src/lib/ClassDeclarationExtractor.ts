@@ -44,16 +44,15 @@ export class ClassDeclarationExtractor {
 
         const featuresOfTargetClass = this.getClassFeatures(targetClassNode);
 
+        for (const property of featuresOfTargetClass.properties) {
+            this.usedProperties.setKey(this.propertyFactory.make(property.name.getText(), property.modifiers, PropertyType.Field));
+        }
+
         if (featuresOfTargetClass.constructor) {
             this.findPropertiesInConstructor(featuresOfTargetClass.constructor);
         }
 
         this.findPropertiesInMethods(featuresOfTargetClass.methods);
-
-        // want to include all properties on the eventual graph even if nothing maps to them
-        for (const property of featuresOfTargetClass.properties) {
-            this.usedProperties.setKey(this.propertyFactory.make(property.name.getText(), property.modifiers, PropertyType.Field));
-        }
 
         return this.usedProperties;
     }
