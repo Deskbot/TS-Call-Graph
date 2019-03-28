@@ -1,9 +1,5 @@
 import * as ts from "typescript";
 
-import { OneToManyMap } from "./OneToManyMap";
-
-export type PropertyToMethodsMap = OneToManyMap<Property, Property>;
-
 export enum PropertyType {
     Field,
     Method,

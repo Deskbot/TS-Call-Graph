@@ -7,7 +7,7 @@ import {
 } from "typescript";
 import * as ts from "typescript";
 
-import { PropertyFactory, PropertyType, Property, PropertyToMethodsMap } from "./Property";
+import { PropertyFactory, PropertyType, Property } from "./Property";
 import { MyError } from "./error";
 import { OneToManyMap } from "./OneToManyMap";
 import { boolify } from "./function";
@@ -18,6 +18,8 @@ type ClassFeatures = {
     methods: ts.FunctionLikeDeclaration[],
     properties: ts.PropertyDeclaration[],
 };
+
+export type PropertyToMethodsMap = OneToManyMap<Property, Property>;
 
 export class ClassDeclarationExtractor {
     private propertyFactory: PropertyFactory;
