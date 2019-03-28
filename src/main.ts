@@ -18,9 +18,9 @@ function main() {
     }
 
     const declarationExtractor = new ClassDeclarationExtractor(targetFilePath, targetClass);
-    const map = declarationExtractor.createPropertyUsageMap();
+    const digraphRepresentation = declarationExtractor.createPropertyUsageMap();
 
-    console.log(map);
+    console.log(digraphRepresentation);
 
     // build a d3 config object
 }

@@ -1,10 +1,5 @@
 import * as fs from "fs";
 import * as path from "path";
-import {
-    ClassDeclaration,
-    SourceFile,
-    Node as TsNode
-} from "typescript";
 import * as ts from "typescript";
 
 import { Digraph } from "./Digraph";
@@ -75,20 +70,19 @@ export class ClassDeclarationExtractor {
 
         for (const method of featuresOfTargetClass.methods) {
             allProperties.set(method.name, method);
-            console.log(method);
         }
 
         return allProperties;
     }
 
-    private extractClassDeclaration(file: SourceFile, className: string): Maybe<ClassDeclaration> {
+    private extractClassDeclaration(file: ts.SourceFile, className: string): Maybe<ts.ClassDeclaration> {
         return file.statements
             .filter(boolify)
             .filter(ts.isClassDeclaration)
             .find((classDec) => classDec.name !== undefined && classDec.name.text === className);
     }
 
-    private getClassFeatures(cls: ClassDeclaration): ClassFeatures {
+    private getClassFeatures(cls: ts.ClassDeclaration): ClassFeatures {
         const features: ClassFeatures = {
             constructor: undefined,
             field: [],
@@ -114,7 +108,7 @@ export class ClassDeclarationExtractor {
         return features;
     }
 
-    private *getUsedProperties(node: TsNode): Iterable<Property> {
+    private *getUsedProperties(node: ts.Node): Iterable<Property> {
         const astNodeStream = depthFirstSearch(node, (node) => node.getChildren());
 
         for (const astNode of astNodeStream) {
@@ -130,7 +124,7 @@ export class ClassDeclarationExtractor {
         }
     }
 
-    private parseFile(targetFilePath: string): SourceFile {
+    private parseFile(targetFilePath: string): ts.SourceFile {
         const targetFileData = fs.readFileSync(targetFilePath).toString();
 
         return ts.createSourceFile(
