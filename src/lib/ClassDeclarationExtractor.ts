@@ -57,12 +57,10 @@ export class ClassDeclarationExtractor {
         return this.usedProperties;
     }
 
-    private findPropertiesInConstructor(constructor: ts.ConstructorDeclaration) {
-        if (constructor) {
-            const constr = this.propertyFactory.make("constructor", constructor.modifiers, PropertyType.Method);
-            for (const property of this.getUsedProperties(constructor)) {
-                this.usedProperties.set(property, constr);
-            }
+    private findPropertiesInConstructor(constrDeclaration: ts.ConstructorDeclaration) {
+        const constrProperty = this.propertyFactory.make("constructor", constrDeclaration.modifiers, PropertyType.Method);
+        for (const property of this.getUsedProperties(constrDeclaration)) {
+            this.usedProperties.set(property, constrProperty);
         }
     }
 
