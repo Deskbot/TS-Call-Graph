@@ -25,11 +25,13 @@ export class ClassDeclarationExtractor {
     private propertyFactory: PropertyFactory;
     private targetClass: string;
     private targetFilePath: string;
+    private usedProperties: OneToManyMap<Property, Property>;
 
     constructor(targetFilePath: string, targetClass: string) {
         this.propertyFactory = new PropertyFactory();
         this.targetClass = targetClass;
         this.targetFilePath = targetFilePath
+        this.usedProperties = new OneToManyMap<Property, Property>();
     }
 
     public createPropertyUsageMap(): PropertyToMethodsMap {
@@ -42,25 +44,23 @@ export class ClassDeclarationExtractor {
 
         const featuresOfTargetClass = this.getClassFeatures(targetClassNode);
 
-        const map = this.buildMapOfUsedProperties(featuresOfTargetClass);
+        this.buildMapOfUsedProperties(featuresOfTargetClass);
 
         // want to include all properties on the eventual graph even if nothing maps to them
         for (const property of featuresOfTargetClass.properties) {
-            map.setKey(this.propertyFactory.make(property.name.getText(), property.modifiers, PropertyType.Field));
+            this.usedProperties.setKey(this.propertyFactory.make(property.name.getText(), property.modifiers, PropertyType.Field));
         }
 
-        return map;
+        return this.usedProperties;
     }
 
     private buildMapOfUsedProperties(classFeatures: ClassFeatures): PropertyToMethodsMap {
         const { constructor, methods } = classFeatures;
 
-        const map = new OneToManyMap<Property, Property>();
-
         if (constructor) {
             const constr = this.propertyFactory.make("constructor", constructor.modifiers, PropertyType.Method);
             for (const property of this.getUsedProperties(constructor)) {
-                map.set(property, constr);
+                this.usedProperties.set(property, constr);
             }
         }
 
@@ -68,11 +68,11 @@ export class ClassDeclarationExtractor {
             let methodName = method.name ? method.name!.getText() : `anonymous method ${Math.random()}`; // not sure when this can happen
 
             for (const property of this.getUsedProperties(method)) {
-                map.set(property, this.propertyFactory.make(methodName, method.modifiers, PropertyType.Method));
+                this.usedProperties.set(property, this.propertyFactory.make(methodName, method.modifiers, PropertyType.Method));
             }
         }
 
-        return map;
+        return this.usedProperties;
     }
 
     private extractClassDeclaration(file: SourceFile, className: string): Maybe<ClassDeclaration> {
