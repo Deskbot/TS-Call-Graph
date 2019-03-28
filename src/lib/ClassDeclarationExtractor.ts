@@ -7,10 +7,10 @@ import {
 } from "typescript";
 import * as ts from "typescript";
 
-import { PropertyFactory, PropertyType, Property } from "./Property";
+import { Digraph } from "./Digraph";
 import { MyError } from "./error";
-import { OneToManyMap } from "./OneToManyMap";
 import { boolify } from "./function";
+import { PropertyType, Property } from "./Property";
 import { depthFirstSearch } from "./traversal";
 
 type ClassFeatures = {
@@ -19,19 +19,17 @@ type ClassFeatures = {
     properties: ts.PropertyDeclaration[],
 };
 
-export type PropertyToMethodsMap = OneToManyMap<Property, Property>;
+export type PropertyToMethodsMap = Digraph<Property>;
 
 export class ClassDeclarationExtractor {
-    private propertyFactory: PropertyFactory;
+    private propertyUsage: PropertyToMethodsMap;
     private targetClass: string;
     private targetFilePath: string;
-    private usedProperties: OneToManyMap<Property, Property>;
 
     constructor(targetFilePath: string, targetClass: string) {
-        this.propertyFactory = new PropertyFactory();
+        this.propertyUsage = new Digraph<Property>();
         this.targetClass = targetClass;
         this.targetFilePath = targetFilePath
-        this.usedProperties = new OneToManyMap<Property, Property>();
     }
 
     public createPropertyUsageMap(): PropertyToMethodsMap {
@@ -44,36 +42,38 @@ export class ClassDeclarationExtractor {
 
         const featuresOfTargetClass = this.getClassFeatures(targetClassNode);
 
+        const allProperties = this.registerAllFeatures(featuresOfTargetClass);
+
+        for (const property of allProperties.values()) {
+            this.propertyUsage.addNode(property);
+        }
+        return this.propertyUsage;
+    }
+
+    private registerAllFeatures(featuresOfTargetClass: ClassFeatures): Map<string, Property> {
+        const allProperties = new Map<string, Property>();
+
         for (const property of featuresOfTargetClass.properties) {
-            this.usedProperties.setKey(this.propertyFactory.make(property.name.getText(), property.modifiers, PropertyType.Field));
+            allProperties.set(
+                property.name.getText(),
+                new Property(property.name.getText(), property.modifiers, PropertyType.Field),
+            );
         }
 
         if (featuresOfTargetClass.constructor) {
-            this.findPropertiesInConstructor(featuresOfTargetClass.constructor);
+            allProperties.set(
+                "constructor",
+                new Property("constructor", featuresOfTargetClass.constructor.modifiers, PropertyType.Method),
+            );
         }
 
-        this.findPropertiesInMethods(featuresOfTargetClass.methods);
-
-        return this.usedProperties;
-    }
-
-    private findPropertiesInConstructor(constrDeclaration: ts.ConstructorDeclaration) {
-        const constrProperty = this.propertyFactory.make("constructor", constrDeclaration.modifiers, PropertyType.Method);
-        for (const property of this.getUsedProperties(constrDeclaration)) {
-            this.usedProperties.set(property, constrProperty);
-        }
-    }
-
-    private findPropertiesInMethods(methods: ts.FunctionLikeDeclaration[]) {
-        for (const method of methods) {
+        for (const method of featuresOfTargetClass.methods) {
             const methodName = method.name ? method.name!.getText() : `anonymous method ${Math.random()}`; // not sure when this can happen
-            const methodProperty = this.propertyFactory.make(methodName, method.modifiers, PropertyType.Method);
-            this.usedProperties.setKey(methodProperty);
-
-            for (const property of this.getUsedProperties(method)) {
-                this.usedProperties.set(property, methodProperty);
-            }
+            const methodProperty = new Property(methodName, method.modifiers, PropertyType.Method);
+            allProperties.set(methodName, methodProperty);
         }
+
+        return allProperties;
     }
 
     private extractClassDeclaration(file: SourceFile, className: string): Maybe<ClassDeclaration> {
@@ -116,7 +116,7 @@ export class ClassDeclarationExtractor {
                 const accessorCode = astNode.getText();
                 const accessorPath = accessorCode.split(".");
                 if (accessorPath[0] === "this" || accessorPath[0] === "super" || accessorPath[0] === this.targetClass) {
-                    yield this.propertyFactory.make(accessorPath[1], astNode.modifiers, PropertyType.Field);
+                    yield new Property(accessorPath[1], astNode.modifiers, PropertyType.Field);
                 }
             }
         }
