@@ -58,7 +58,7 @@ export class ClassDeclarationExtractor {
         if (constructor) {
             const constr = this.propertyFactory.make("constructor", constructor.modifiers, PropertyType.Method);
             for (const property of this.getUsedProperties(constructor)) {
-                map.set(constr, property);
+                map.set(property, constr);
             }
         }
 
@@ -113,7 +113,6 @@ export class ClassDeclarationExtractor {
                 const accessorCode = astNode.getText();
                 const accessorPath = accessorCode.split(".");
                 if (accessorPath[0] === "this" || accessorPath[0] === "super") {
-                    console.log(accessorPath[1], astNode.modifiers);
                     yield this.propertyFactory.make(accessorPath[1], astNode.modifiers, PropertyType.Field);
                 }
             }
