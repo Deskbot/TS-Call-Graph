@@ -8,7 +8,7 @@
         "url": "git+https://github.com/Deskbot/TS-Call-Graph.git"
     },
     "scripts": {
-        "build": "tsc",
+        "build": "./build.sh",
         "start": "node -r source-map-support/register out/main"
     },
     "keywords": [
@@ -21,9 +21,12 @@
     },
     "homepage": "https://github.com/Deskbot/TS-Call-Graph#readme",
     "devDependencies": {
-        "@types/node": "^11.11.6"
+        "@types/d3": "^5.7.1",
+        "@types/node": "^11.11.6",
+        "browserify": "^16.2.3"
     },
     "dependencies": {
+        "d3": "^5.9.2",
         "source-map-support": "^0.5.11",
         "typescript": "^3.3.4000"
     }

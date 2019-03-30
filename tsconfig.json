@@ -1,12 +1,13 @@
 {
     "compilerOptions": {
         "alwaysStrict": true,
-        "module": "commonjs",
+        "module": "CommonJS",
         "noImplicitAny": true,
         "noImplicitThis": true,
         "noImplicitReturns": true,
-        "outDir": "./out",
+        "outDir": "./js",
         "sourceMap": true,
+        "sourceRoot": "./src",
         "strict": true,
         "strictFunctionTypes": true,
         "strictNullChecks": true,
@@ -15,6 +16,6 @@
     },
 
     "exclude": [
-        "./dev/examples"
+        "./dev/**/*"
     ]
 }
