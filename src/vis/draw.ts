@@ -13,19 +13,24 @@ type Node = {
     group: number;
 } & d3.SimulationNodeDatum;
 
-const links: Link[] = data.links.map(d => Object.create(d));
-const nodes: Node[] = data.nodes.map(d => Object.create(d));
+const links: Link[] = data.links.map(node => Object.create(node));
+const nodes: Node[] = data.nodes.map(node => Object.create(node));
 
-const height = 500;
-const width = 500;
+const height = 1500;
+const width = 1000;
 
 const container = d3.select('#ts-call-graph').append('svg')
     .attr('height', width)
     .attr('width', height);
 
 d3.forceSimulation(nodes)
-    .force('charge', d3.forceManyBody())
+    .force('charge', d3.forceManyBody().strength(-5))
     .force('center', d3.forceCenter(width / 2, height / 2))
+    .force('no-overlap', d3.forceCollide)
+    .force('edges', d3.forceLink<Node, Link>(links)
+        .id(node => node.id)
+        .distance(20)
+        .strength(1))
     .on('tick', onTick);
 
 function onTick() {
@@ -37,8 +42,8 @@ function onTick() {
         .append('circle')
         .attr('r', 5)
         .merge(selectedCircles)
-        .attr('cx', d => d.x!)
-        .attr('cy', d => d.y!);
+        .attr('cx', node => node.x!)
+        .attr('cy', node => node.y!);
 
     selectedCircles.exit().remove();
 }
