@@ -16,12 +16,12 @@ type Node = {
 const links: Link[] = data.links.map(node => Object.create(node));
 const nodes: Node[] = data.nodes.map(node => Object.create(node));
 
-const height = 1500;
-const width = 1000;
+const height = 350;
+const width = 700;
 
 const container = d3.select('#ts-call-graph').append('svg')
-    .attr('height', width)
-    .attr('width', height);
+    .attr('height', height)
+    .attr('width', width);
 
 d3.forceSimulation(nodes)
     .force('charge', d3.forceManyBody().strength(-5))
