@@ -1,4 +1,6 @@
 import * as process from "process";
+
+import * as d3Builder from "./lib/D3Builder";
 import { ClassDeclarationExtractor } from "./lib/ClassDeclarationExtractor";
 import { MyError } from "./lib/error";
 
@@ -20,7 +22,8 @@ function main() {
     const declarationExtractor = new ClassDeclarationExtractor(targetFilePath, targetClass);
     const digraphRepresentation = declarationExtractor.createPropertyUsageMap();
 
-    console.log(digraphRepresentation);
+    const [nodeInputs, edgesInputs] = d3Builder.build(digraphRepresentation);
 
-    // build a d3 config object
+    console.log(JSON.stringify(nodeInputs));
+    console.log(JSON.stringify(edgesInputs));
 }
