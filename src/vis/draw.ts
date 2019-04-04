@@ -25,19 +25,22 @@ const nodes: Node[] = data.nodes.map(node => Object.create(node));
 const height = 350;
 const width = 700;
 
+const radius = 10;
+
 const container = d3.select("#ts-call-graph").append("svg")
     .attr("height", height)
     .attr("width", width);
 
 d3.forceSimulation(nodes)
     .force("charge", d3.forceManyBody()
-        .strength(-50))
+        .strength(-10))
     .force("center", d3.forceCenter(width / 2, height / 2))
-    .force("no-overlap", d3.forceCollide)
+    .force("no-overlap", d3.forceCollide()
+        .radius(radius + 5))
     .force("edges", d3.forceLink<Node, LinkInput>(links)
         .id(node => node.id)
-        .distance(20)
-        .strength(30))
+        .distance(radius * 2)
+        .strength(2))
     .on("tick", onTick);
 
 function onTick() {
@@ -47,7 +50,7 @@ function onTick() {
 
     allNodeTags.enter()
         .append("circle")
-        .attr("r", 5)
+        .attr("r", radius)
         .merge(allNodeTags)
         .attr("cx", node => node.x!)
         .attr("cy", node => node.y!);
