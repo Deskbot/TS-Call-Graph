@@ -6,7 +6,7 @@ type LinkInput = {
     source: string;
     target: string;
     value: number;
-};
+} & d3.SimulationLinkDatum<Node>;
 
 type Link = {
     source: Node;
@@ -19,7 +19,7 @@ type Node = {
     group: number;
 } & d3.SimulationNodeDatum;
 
-const links: Link[] = data.links.map(node => Object.create(node));
+const links: LinkInput[] = data.links.map(node => Object.create(node));
 const nodes: Node[] = data.nodes.map(node => Object.create(node));
 
 const height = 350;
@@ -34,7 +34,7 @@ d3.forceSimulation(nodes)
         .strength(-50))
     .force("center", d3.forceCenter(width / 2, height / 2))
     .force("no-overlap", d3.forceCollide)
-    .force("edges", d3.forceLink<Node, Link>(links)
+    .force("edges", d3.forceLink<Node, LinkInput>(links)
         .id(node => node.id)
         .distance(20)
         .strength(30))
@@ -55,8 +55,9 @@ function onTick() {
     allNodeTags.exit().remove();
 
     const allEdgeTags = d3.select("svg")
-        .selectAll<SVGLineElement, Link>("line")
-        .data(links);
+        .selectAll<SVGLineElement, LinkInput>("line")
+        .data(links) as d3.Selection<SVGLineElement, Link, d3.BaseType, {}>;
+        // assert that d3 has transformed the link type
 
     allEdgeTags.enter()
         .append("line")
