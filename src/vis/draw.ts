@@ -25,35 +25,36 @@ const nodes: Node[] = data.nodes.map(node => Object.create(node));
 const height = 350;
 const width = 700;
 
-const container = d3.select('#ts-call-graph').append('svg')
-    .attr('height', height)
-    .attr('width', width);
+const container = d3.select("#ts-call-graph").append("svg")
+    .attr("height", height)
+    .attr("width", width);
 
 d3.forceSimulation(nodes)
-    .force('charge', d3.forceManyBody().strength(-50))
-    .force('center', d3.forceCenter(width / 2, height / 2))
-    .force('no-overlap', d3.forceCollide)
-    .force('edges', d3.forceLink<Node, Link>(links)
+    .force("charge", d3.forceManyBody()
+        .strength(-50))
+    .force("center", d3.forceCenter(width / 2, height / 2))
+    .force("no-overlap", d3.forceCollide)
+    .force("edges", d3.forceLink<Node, Link>(links)
         .id(node => node.id)
         .distance(20)
         .strength(30))
-    .on('tick', onTick);
+    .on("tick", onTick);
 
 function onTick() {
-    const allNodeTags = d3.select('svg')
-        .selectAll<SVGCircleElement, Node>('circle')
+    const allNodeTags = d3.select("svg")
+        .selectAll<SVGCircleElement, Node>("circle")
         .data(nodes);
 
     allNodeTags.enter()
-        .append('circle')
-        .attr('r', 5)
+        .append("circle")
+        .attr("r", 5)
         .merge(allNodeTags)
-        .attr('cx', node => node.x!)
-        .attr('cy', node => node.y!);
+        .attr("cx", node => node.x!)
+        .attr("cy", node => node.y!);
 
     allNodeTags.exit().remove();
 
-    const allEdgeTags = d3.select('svg')
+    const allEdgeTags = d3.select("svg")
         .selectAll<SVGLineElement, Link>("line")
         .data(links);
 
