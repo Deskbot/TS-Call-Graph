@@ -1,29 +1,26 @@
 import * as d3 from "d3";
 
-import { data } from "./d3Input";
+import { data } from "./example1D3Input";
 
 type LinkInput = {
     source: string;
     target: string;
-    value: number;
 } & d3.SimulationLinkDatum<Node>;
 
 type Link = {
     source: Node;
     target: Node;
-    value: number;
 } & d3.SimulationLinkDatum<Node>;
 
 type Node = {
-    id: string;
-    group: number;
+    name: string;
 } & d3.SimulationNodeDatum;
 
 const links: LinkInput[] = data.links.map(node => Object.create(node));
 const nodes: Node[] = data.nodes.map(node => Object.create(node));
 
-const height = 350;
-const width = 700;
+const height = 700;
+const width = 1200;
 
 const radius = 10;
 
@@ -38,9 +35,9 @@ d3.forceSimulation(nodes)
     .force("no-overlap", d3.forceCollide()
         .radius(radius + 5))
     .force("edges", d3.forceLink<Node, LinkInput>(links)
-        .id(node => node.id)
-        .distance(radius * 2)
-        .strength(2))
+        .id(node => node.name)
+        .distance(radius * 5)
+        .strength(1))
     .on("tick", onTick);
 
 function onTick() {
