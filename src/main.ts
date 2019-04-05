@@ -20,7 +20,7 @@ function main() {
     }
 
     const declarationExtractor = new ClassDeclarationExtractor(targetFilePath, targetClass);
-    const digraphRepresentation = declarationExtractor.createPropertyUsageMap();
+    const digraphRepresentation = declarationExtractor.createDigraph();
 
     const [nodeInputs, edgesInputs] = d3Builder.build(digraphRepresentation);
 

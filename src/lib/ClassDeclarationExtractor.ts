@@ -17,7 +17,7 @@ type ClassFeatures = {
 export class ClassDeclarationExtractor {
     private allProperties: Map<string, Property>;
     private featuresOfTargetClass: ClassFeatures;
-    private propertyUsage: Maybe<Digraph<Property>>;
+    private digraph: Maybe<Digraph<Property>>;
     private targetClass: string;
     private targetFilePath: string;
 
@@ -37,28 +37,28 @@ export class ClassDeclarationExtractor {
         this.allProperties = this.registerAllFeatures(this.featuresOfTargetClass);
     }
 
-    public createPropertyUsageMap(): Digraph<Property> {
-        if (!this.propertyUsage) {
-            this.propertyUsage = new Digraph();
+    public createDigraph(): Digraph<Property> {
+        if (!this.digraph) {
+            this.digraph = new Digraph();
 
             for (const property of this.allProperties.values()) {
-                this.propertyUsage.addNode(property);
+                this.digraph.addNode(property);
             }
 
             if (this.featuresOfTargetClass.constructor) {
                 for (const usedProperty of this.getUsedProperties(this.featuresOfTargetClass.constructor.declaration)) {
-                    this.propertyUsage.addEdge(this.featuresOfTargetClass.constructor, usedProperty);
+                    this.digraph.addEdge(this.featuresOfTargetClass.constructor, usedProperty);
                 }
             }
 
             for (const method of this.featuresOfTargetClass.methods) {
                 for (const usedProperty of this.getUsedProperties(method.declaration)) {
-                    this.propertyUsage.addEdge(method, usedProperty);
+                    this.digraph.addEdge(method, usedProperty);
                 }
             }
         }
 
-        return this.propertyUsage;
+        return this.digraph;
     }
 
     private registerAllFeatures(featuresOfTargetClass: ClassFeatures): Map<string, Property> {
