@@ -2,14 +2,14 @@
     "name": "ts-call-graph",
     "version": "1.0.0",
     "description": "A program that generates canvas graphs of the uses of methods and attributes in a given TypeScript class.",
-    "main": "out/main.js ",
+    "main": "js/main.js ",
     "repository": {
         "type": "git",
         "url": "git+https://github.com/Deskbot/TS-Call-Graph.git"
     },
     "scripts": {
         "build": "./build.sh",
-        "start": "node -r source-map-support/register out/main"
+        "start": "node -r source-map-support/register js/main"
     },
     "keywords": [
         "TypeScript"
