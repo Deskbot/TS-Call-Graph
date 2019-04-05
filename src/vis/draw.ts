@@ -30,14 +30,14 @@ const container = d3.select("#ts-call-graph").append("svg")
 
 d3.forceSimulation(nodes)
     .force("charge", d3.forceManyBody()
-        .strength(-10))
+        .strength(-100))
     .force("center", d3.forceCenter(width / 2, height / 2))
     .force("no-overlap", d3.forceCollide()
-        .radius(radius + 5))
+        .radius(radius * 4))
     .force("edges", d3.forceLink<Node, LinkInput>(links)
         .id(node => node.name)
-        .distance(radius * 5)
-        .strength(1))
+        .distance(radius * 10)
+        .strength(2))
     .on("tick", onTick);
 
 function onTick() {
