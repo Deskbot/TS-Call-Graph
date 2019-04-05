@@ -41,6 +41,10 @@ export class ClassDeclarationExtractor {
         if (!this.propertyUsage) {
             this.propertyUsage = new Digraph();
 
+            for (const property of this.allProperties.values()) {
+                this.propertyUsage.addNode(property);
+            }
+
             if (this.featuresOfTargetClass.constructor) {
                 for (const usedProperty of this.getUsedProperties(this.featuresOfTargetClass.constructor.declaration)) {
                     this.propertyUsage.addEdge(this.featuresOfTargetClass.constructor, usedProperty);
