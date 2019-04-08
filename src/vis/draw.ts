@@ -54,19 +54,6 @@ function onTick() {
 
     allNodeTags.exit().remove();
 
-    const allTextTags = d3.select("svg")
-        .selectAll<SVGTextElement, Node>("text")
-        .data(nodes);
-
-    allTextTags.enter()
-        .append("text")
-        .merge(allTextTags)
-        .attr("x", node => node.x! - 16)
-        .attr("y", node => node.y! - 16)
-        .text(node => node.name);
-
-    allTextTags.exit().remove();
-
     const allEdgeTags = d3.select("svg")
         .selectAll<SVGLineElement, LinkInput>("line")
         .data(links) as d3.Selection<SVGLineElement, Link, d3.BaseType, {}>;
@@ -82,5 +69,18 @@ function onTick() {
         .attr("y2", edge => edge.target.y!);
 
     allEdgeTags.exit().remove();
+
+    const allTextTags = d3.select("svg")
+        .selectAll<SVGTextElement, Node>("text")
+        .data(nodes);
+
+    allTextTags.enter()
+        .append("text")
+        .merge(allTextTags)
+        .attr("x", node => node.x! - 16)
+        .attr("y", node => node.y! - 16)
+        .text(node => node.name);
+
+    allTextTags.exit().remove();
 }
 
