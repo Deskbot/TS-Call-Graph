@@ -24,19 +24,19 @@ const width = 1200;
 
 const radius = 10;
 
-d3.select("#ts-call-graph").append("svg")
+d3.select("#ts-call-graph")
     .attr("height", height)
     .attr("width", width);
 
 d3.forceSimulation(nodes)
     .force("charge", d3.forceManyBody()
-        .strength(-100))
+        .strength(-200))
     .force("center", d3.forceCenter(width / 2, height / 2))
     .force("no-overlap", d3.forceCollide()
         .radius(radius * 4))
     .force("edges", d3.forceLink<Node, LinkInput>(links)
         .id(node => node.name)
-        .distance(radius * 10)
+        .distance(radius * 15)
         .strength(2))
     .on("tick", onTick);
 
@@ -75,6 +75,7 @@ function onTick() {
     allEdgeTags.enter()
         .append("line")
         .merge(allEdgeTags)
+        .attr("marker-end", "url(#arrow-head)")
         .attr("x1", edge => edge.source.x!)
         .attr("y1", edge => edge.source.y!)
         .attr("x2", edge => edge.target.x!)
