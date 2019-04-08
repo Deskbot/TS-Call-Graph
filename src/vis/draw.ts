@@ -19,8 +19,8 @@ type Node = {
 const links: LinkInput[] = data.links.map(node => Object.create(node));
 const nodes: Node[] = data.nodes.map(node => Object.create(node));
 
-const height = 700;
-const width = 1200;
+const height = window.innerHeight;
+const width = window.innerWidth;
 
 const radius = 10;
 
