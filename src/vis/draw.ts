@@ -28,23 +28,12 @@ d3.select("#ts-call-graph")
     .attr("height", height)
     .attr("width", width);
 
-const nodeDragBehaviour = d3.drag<SVGCircleElement, Node>()
+const textAndNodeDragBehaviour = d3.drag<any, Node>()
     .on("start", () => {
         // prevent normal browser behaviour from taking place
         d3.event.sourceEvent.stopPropagation();
     })
-    .on("drag", (node) => {
-        node.x = d3.event.x;
-        node.y = d3.event.y;
-        forceBehaviour.restart();
-    });
-
-const textDragBehaviour = d3.drag<SVGTextElement, Node>()
-    .on("start", () => {
-        // prevent normal browser behaviour from taking place
-        d3.event.sourceEvent.stopPropagation();
-    })
-    .on("drag", (node) => {
+    .on("drag", node => {
         node.x = d3.event.x;
         node.y = d3.event.y;
         forceBehaviour.restart();
@@ -69,9 +58,9 @@ function onTick() {
 
     allNodeTags.enter()
         .append("circle")
-        .call(nodeDragBehaviour)
-        .attr("r", radius)
         .merge(allNodeTags)
+        .call(textAndNodeDragBehaviour)
+        .attr("r", radius)
         .attr("cx", node => node.x!)
         .attr("cy", node => node.y!);
 
@@ -99,8 +88,8 @@ function onTick() {
 
     allTextTags.enter()
         .append("text")
-        .call(textDragBehaviour)
         .merge(allTextTags)
+        .call(textAndNodeDragBehaviour)
         .attr("x", node => node.x! - 16)
         .attr("y", node => node.y! - 16)
         .text(node => node.name);
