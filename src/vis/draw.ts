@@ -28,7 +28,20 @@ d3.select("#ts-call-graph")
     .attr("height", height)
     .attr("width", width);
 
-d3.forceSimulation(nodes)
+
+const nodeDragBehaviour = d3.drag<SVGCircleElement, Node>()
+    .on("start", function() {
+        // prevent normal browser behaviour from taking place
+        d3.event.sourceEvent.stopPropagation();
+    })
+    .on("drag", function(node) {
+        d3.select(this)
+            .attr("cx", node.x = d3.event.x)
+            .attr("cy", node.y = d3.event.y);
+        forceBehaviour.restart();
+    });
+
+const forceBehaviour = d3.forceSimulation(nodes)
     .force("charge", d3.forceManyBody()
         .strength(-200))
     .force("center", d3.forceCenter(width / 2, height / 2))
@@ -47,6 +60,7 @@ function onTick() {
 
     allNodeTags.enter()
         .append("circle")
+        .call(nodeDragBehaviour)
         .attr("r", radius)
         .merge(allNodeTags)
         .attr("cx", node => node.x!)
