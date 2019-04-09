@@ -1,3 +1,3 @@
 mkdir -p js out/js
 tsc &&
-    browserify js/vis/draw.js > out/js/index.js
+    browserify js/vis/main.js > out/js/main.js
