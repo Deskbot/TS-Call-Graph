@@ -13,7 +13,10 @@ function main() {
 
     try {
         args = process.argv.slice(2); // drop "node" and the file name
-        targetFilePath = process.cwd() + "/" + args[0];
+        // if the path argument is relative, treat it relative to where the program is ran from
+        targetFilePath = args[0][0] === "/"
+            ? args[0]
+            : process.cwd() + "/" + args[0];
         targetClass = args[1];
     } catch (ignore) {
         throw new MyError("Usage: arg1: target file path, arg2: target class name");
