@@ -22,6 +22,8 @@ function main() {
     const declarationExtractor = new ClassDeclarationExtractor(targetFilePath, targetClass);
     const digraphRepresentation = declarationExtractor.createDigraph();
 
+    console.log(digraphRepresentation);
+
     const [nodeInputs, edgesInputs] = d3Builder.build(digraphRepresentation);
 
     console.log(JSON.stringify(nodeInputs));

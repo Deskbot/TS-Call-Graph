@@ -1,10 +1,11 @@
 import * as d3 from "d3";
 import { GraphNode, GraphEdgeInput, GraphEdge } from "./types";
 
-const height = window.innerHeight;
-const width = window.innerWidth;
+const height = 5000;
+const width = 5000;
 
 const radius = 10;
+const LINK_FORCE = 15;
 
 export function draw(nodes: GraphNode[], links: GraphEdgeInput[]) {
     d3.select("#ts-call-graph")
@@ -16,22 +17,23 @@ export function draw(nodes: GraphNode[], links: GraphEdgeInput[]) {
             // prevent normal browser behaviour from taking place
             d3.event.sourceEvent.stopPropagation();
         })
-        .on("drag", node => {
-            node.x = d3.event.x;
-            node.y = d3.event.y;
+        .on("drag", datum => {
+            datum.x = d3.event.x;
+            datum.y = d3.event.y;
             forceBehaviour.restart();
         });
 
     const forceBehaviour = d3.forceSimulation(nodes)
-        .force("charge", d3.forceManyBody()
-            .strength(-200))
+        // .force("charge", d3.forceRadial<GraphNode>(datum => {
+        //     return datum.childCount * LINK_FORCE;
+        // }))
         .force("center", d3.forceCenter(width / 2, height / 2))
-        .force("no-overlap", d3.forceCollide()
-            .radius(radius * 4))
+        .force("no-overlap", d3.forceCollide<GraphNode>(datum => (datum.childCount + 1) * radius))
         .force("edges", d3.forceLink<GraphNode, GraphEdgeInput>(links)
             .id(node => node.name)
-            .distance(radius * 15)
+            .distance(radius * LINK_FORCE)
             .strength(2))
+        .force("pull-nodes-with-more-children-up", d3.forceY<GraphNode>(node => node.childCount * LINK_FORCE))
         .on("tick", onTick);
 
     function onTick() {

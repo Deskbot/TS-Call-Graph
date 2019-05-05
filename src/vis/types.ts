@@ -1,4 +1,5 @@
 export type GraphNode = {
+    childCount: number;
     name: string;
 } & d3.SimulationNodeDatum;
 
