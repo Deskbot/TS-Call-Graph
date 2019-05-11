@@ -1,6 +1,9 @@
+import { Privacy } from "../lib/Property";
+
 export type GraphNode = {
     childCount: number;
     name: string;
+    privacy: Privacy;
 } & d3.SimulationNodeDatum;
 
 export type GraphEdgeInput = {

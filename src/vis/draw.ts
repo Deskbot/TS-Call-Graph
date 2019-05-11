@@ -1,8 +1,10 @@
 import * as d3 from "d3";
+import * as ts from "typescript";
+
 import { GraphNode, GraphEdgeInput, GraphEdge } from "./types";
 
-const height = 5000;
-const width = 5000;
+const height = 9000;
+const width = 9000;
 
 const radius = 10;
 const LINK_FORCE = 15;
@@ -45,6 +47,17 @@ export function draw(nodes: GraphNode[], links: GraphEdgeInput[]) {
             .append("circle")
             .merge(allNodeTags)
             .call(textAndNodeDragBehaviour)
+            .each((datum, i, selection) => {
+                const node = selection[i];
+                switch (datum.privacy) {
+                    case ts.ModifierFlags.Public:
+                        return node.classList.add("public");
+                    case ts.ModifierFlags.Private:
+                        return node.classList.add("private");
+                    case ts.ModifierFlags.Protected:
+                        return node.classList.add("protected");
+                }
+            })
             .attr("r", radius)
             .attr("cx", node => node.x!)
             .attr("cy", node => node.y!);
