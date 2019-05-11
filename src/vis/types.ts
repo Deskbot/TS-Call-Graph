@@ -1,11 +1,8 @@
-export type GraphNode = {
-    name: string;
-} & d3.SimulationNodeDatum;
+import { NodeInput, LinkInput } from "../lib/D3Builder";
 
-export type GraphEdgeInput = {
-    source: string;
-    target: string;
-} & d3.SimulationLinkDatum<GraphNode>;
+export type GraphNode = NodeInput & d3.SimulationNodeDatum;
+
+export type GraphEdgeInput = LinkInput & d3.SimulationLinkDatum<GraphNode>;
 
 export type GraphEdge = {
     source: GraphNode;

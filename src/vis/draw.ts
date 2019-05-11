@@ -1,12 +1,18 @@
 import * as d3 from "d3";
+import * as ts from "typescript";
+
 import { GraphNode, GraphEdgeInput, GraphEdge } from "./types";
 
-const height = window.innerHeight;
-const width = window.innerWidth;
+const height = 9000;
+const width = 9000;
 
 const radius = 10;
+const LINK_FORCE = 15;
 
 export function draw(nodes: GraphNode[], links: GraphEdgeInput[]) {
+    const highestParentCount = nodes.reduce((highestCount, next) => highestCount > next.parentCount ? highestCount : next.parentCount, 0);
+    const highestChildCount = nodes.reduce((highestCount, next) => highestCount > next.childCount ? highestCount : next.childCount, 0);
+
     d3.select("#ts-call-graph")
         .attr("height", height)
         .attr("width", width);
@@ -16,22 +22,22 @@ export function draw(nodes: GraphNode[], links: GraphEdgeInput[]) {
             // prevent normal browser behaviour from taking place
             d3.event.sourceEvent.stopPropagation();
         })
-        .on("drag", node => {
-            node.x = d3.event.x;
-            node.y = d3.event.y;
+        .on("drag", datum => {
+            datum.x = d3.event.x;
+            datum.y = d3.event.y;
             forceBehaviour.restart();
         });
 
     const forceBehaviour = d3.forceSimulation(nodes)
-        .force("charge", d3.forceManyBody()
-            .strength(-200))
+        // .force("charge", d3.forceManyBody<GraphNode>().strength(datum => - datum.childCount - datum.parentCount))
         .force("center", d3.forceCenter(width / 2, height / 2))
-        .force("no-overlap", d3.forceCollide()
-            .radius(radius * 4))
+        .force("more-neighbours-more-personal-space", d3.forceCollide<GraphNode>(datum => (datum.childCount + datum.parentCount) * radius + 50))
         .force("edges", d3.forceLink<GraphNode, GraphEdgeInput>(links)
             .id(node => node.name)
-            .distance(radius * 15)
-            .strength(2))
+            .distance(radius * LINK_FORCE)
+            .strength(0.2))
+        .force("pull-nodes-with-more-children-down", d3.forceY<GraphNode>(0).strength(datum => datum.childCount / highestChildCount))
+        .force("pull-nodes-with-more-parents-up", d3.forceY<GraphNode>(height).strength(datum => datum.parentCount / highestParentCount))
         .on("tick", onTick);
 
     function onTick() {
@@ -43,9 +49,20 @@ export function draw(nodes: GraphNode[], links: GraphEdgeInput[]) {
             .append("circle")
             .merge(allNodeTags)
             .call(textAndNodeDragBehaviour)
+            .each((datum, i, selection) => {
+                const node = selection[i];
+                switch (datum.privacy) {
+                    case ts.ModifierFlags.Public:
+                        return node.classList.add("public");
+                    case ts.ModifierFlags.Private:
+                        return node.classList.add("private");
+                    case ts.ModifierFlags.Protected:
+                        return node.classList.add("protected");
+                }
+            })
             .attr("r", radius)
-            .attr("cx", node => node.x!)
-            .attr("cy", node => node.y!);
+            .attr("cx", datum => datum.x!)
+            .attr("cy", datum => datum.y!);
 
         allNodeTags.exit().remove();
 

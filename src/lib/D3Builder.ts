@@ -1,11 +1,15 @@
 import { Digraph } from "./Digraph";
-import { Property } from "./Property";
+import { Property, Privacy } from "./Property";
+import { EasyMap } from "./EasyMap";
 
-type NodeInput = {
+export type NodeInput = {
+    childCount: number,
     name: string,
+    parentCount: number,
+    privacy: Privacy,
 };
 
-type LinkInput = {
+export type LinkInput = {
     source: string,
     target: string,
 };
@@ -13,28 +17,49 @@ type LinkInput = {
 export function build(digraph: Digraph<Property>): [NodeInput[], LinkInput[]] {
     const nodes: NodeInput[] = [];
     const links: LinkInput[] = [];
+    const parentCounts: EasyMap<string, number> = new EasyMap();
 
     for (const [propertyFrom, propertiesTo] of digraph.entries) {
-        nodes.push(propertyToNodeInput(propertyFrom));
+        if (!propertyFrom) {
+            continue; // ignore any undefined propertyfroms
+        }
 
-        const fromId = propertyToNodeId(propertyFrom);
+        nodes.push(propertyToNodeInput(
+            propertyFrom,
+            propertiesTo.size,
+            propertyFrom.privacy
+        ));
+
+        const fromId = propertyFrom.name;
         for (const to of propertiesTo) {
+            // elements on the super class are undefined here
+            if (!to) {
+                continue;
+            }
+
+            const idOfTo = to.name;
+
+            parentCounts.change(idOfTo, 0, count => count + 1);
+
             links.push({
                 source: fromId,
-                target: propertyToNodeId(to),
+                target: idOfTo,
             });
         }
     }
 
+    nodes.forEach(node => {
+        node.parentCount = parentCounts.get(node.name) || 0;
+    })
+
     return [nodes, links];
 }
 
-function propertyToNodeInput(property: Property): NodeInput {
+function propertyToNodeInput(property: Property, childCount: number, privacy: Privacy): NodeInput {
     return {
-        name: propertyToNodeId(property),
+        childCount,
+        name: property.name,
+        parentCount: 0,
+        privacy,
     };
-}
-
-function propertyToNodeId(source: Property): string {
-    return source.name;
 }
