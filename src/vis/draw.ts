@@ -31,7 +31,10 @@ export function draw(nodes: GraphNode[], links: GraphEdgeInput[]) {
     const forceBehaviour = d3.forceSimulation(nodes)
         // .force("charge", d3.forceManyBody<GraphNode>().strength(datum => - datum.childCount - datum.parentCount))
         .force("center", d3.forceCenter(width / 2, height / 2))
-        .force("more-neighbours-more-personal-space", d3.forceCollide<GraphNode>(datum => (datum.childCount + datum.parentCount) * radius + 50))
+        .force(
+            "more-neighbours-more-personal-space",
+            d3.forceCollide<GraphNode>(datum => (datum.parentCount + datum.childCount) * radius + 50)
+        )
         .force("edges", d3.forceLink<GraphNode, GraphEdgeInput>(links)
             .id(node => node.name)
             .distance(radius * LINK_FORCE)
