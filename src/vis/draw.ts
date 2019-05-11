@@ -30,12 +30,12 @@ export function draw(nodes: GraphNode[], links: GraphEdgeInput[]) {
         //     return datum.childCount * LINK_FORCE;
         // }))
         .force("center", d3.forceCenter(width / 2, height / 2))
-        .force("no-overlap", d3.forceCollide<GraphNode>(datum => (datum.childCount + 1) * radius))
+        .force("no-overlap", d3.forceCollide<GraphNode>(datum => datum.childCount * radius + 50))
         .force("edges", d3.forceLink<GraphNode, GraphEdgeInput>(links)
             .id(node => node.name)
             .distance(radius * LINK_FORCE)
             .strength(2))
-        .force("pull-nodes-with-more-children-up", d3.forceY<GraphNode>(node => node.childCount * LINK_FORCE))
+        // .force("pull-nodes-with-more-children-up", d3.forceY<GraphNode>(node => node.childCount * LINK_FORCE))
         .on("tick", onTick);
 
     function onTick() {
@@ -59,8 +59,8 @@ export function draw(nodes: GraphNode[], links: GraphEdgeInput[]) {
                 }
             })
             .attr("r", radius)
-            .attr("cx", node => node.x!)
-            .attr("cy", node => node.y!);
+            .attr("cx", datum => datum.x!)
+            .attr("cy", datum => datum.y!);
 
         allNodeTags.exit().remove();
 
