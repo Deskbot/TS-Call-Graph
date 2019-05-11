@@ -94,18 +94,19 @@ export class ClassDeclarationExtractor {
         };
 
         for (const feature of cls.members) {
+            const modifiers = ts.getCombinedModifierFlags(feature);
             if (ts.isConstructorDeclaration(feature)) {
-                features.constructor = new Property("constructor", feature.modifiers, PropertyType.Method, feature);
+                features.constructor = new Property("constructor", modifiers, PropertyType.Method, feature);
 
             } else if (ts.isMethodDeclaration(feature)
                 || ts.isGetAccessorDeclaration(feature)
                 || ts.isSetAccessorDeclaration(feature)
             ) {
                 const methodName = feature.name ? feature.name!.getText() : `anonymous method ${Math.random()}`; // not sure when this can happen
-                features.methods.push(new Property(methodName, feature.modifiers, PropertyType.Method, feature));
+                features.methods.push(new Property(methodName, modifiers, PropertyType.Method, feature));
 
             } else if (ts.isPropertyDeclaration(feature)) {
-                features.field.push(new Property(feature.name.getText(), feature.modifiers, PropertyType.Field, feature));
+                features.field.push(new Property(feature.name.getText(), modifiers, PropertyType.Field, feature));
             }
         }
 
