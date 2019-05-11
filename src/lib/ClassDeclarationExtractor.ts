@@ -1,5 +1,3 @@
-import * as fs from "fs";
-import * as path from "path";
 import * as ts from "typescript";
 
 import { Digraph } from "./Digraph";
@@ -19,14 +17,11 @@ export class ClassDeclarationExtractor {
     private featuresOfTargetClass: ClassFeatures;
     private digraph: Maybe<Digraph<Property>>;
     private targetClass: string;
-    private targetFilePath: string;
 
-    constructor(targetFilePath: string, targetClass: string) {
+    constructor(file: ts.SourceFile, targetClass: string) {
         this.targetClass = targetClass;
-        this.targetFilePath = targetFilePath
 
-        const parsedFile = this.parseFile(this.targetFilePath);
-        const targetClassNode = this.extractClassDeclaration(parsedFile, this.targetClass);
+        const targetClassNode = this.extractClassDeclaration(file, this.targetClass);
 
         if (targetClassNode === undefined) {
             throw new MyError(`Target class declaration (${this.targetClass}) could not be found.`);
@@ -127,16 +122,5 @@ export class ClassDeclarationExtractor {
                 }
             }
         }
-    }
-
-    private parseFile(targetFilePath: string): ts.SourceFile {
-        const targetFileData = fs.readFileSync(targetFilePath).toString();
-
-        return ts.createSourceFile(
-            path.basename(targetFilePath),
-            targetFileData,
-            ts.ScriptTarget.ES2017,
-            true,
-        );
     }
 }
