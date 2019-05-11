@@ -31,12 +31,11 @@ export function draw(nodes: GraphNode[], links: GraphEdgeInput[]) {
     const forceBehaviour = d3.forceSimulation(nodes)
         .force("charge", d3.forceManyBody<GraphNode>().strength(-50))
         .force("center", d3.forceCenter(width / 2, height / 2))
-        .force("more-neighbours-more-personal-space", d3.forceCollide<GraphNode>(datum => datum.neighbourCount * radius + 50))
+        .force("more-neighbours-more-personal-space", d3.forceCollide<GraphNode>(datum => datum.parentCount + datum.childCount * radius + 50))
         .force("edges", d3.forceLink<GraphNode, GraphEdgeInput>(links)
             .id(node => node.name)
             .distance(radius * LINK_FORCE)
             .strength(1))
-        .force("pull-nodes-with-more-children-up", d3.forceY<GraphNode>(node => node.neighbourCount * LINK_FORCE).strength(2))
         .on("tick", onTick);
 
     function onTick() {
