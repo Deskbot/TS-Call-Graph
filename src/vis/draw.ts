@@ -10,6 +10,9 @@ const radius = 10;
 const LINK_FORCE = 15;
 
 export function draw(nodes: GraphNode[], links: GraphEdgeInput[]) {
+    const highestParentCount = nodes.reduce((highestCount, next) => highestCount > next.parentCount ? highestCount : next.parentCount, 0);
+    const highestChildCount = nodes.reduce((highestCount, next) => highestCount > next.childCount ? highestCount : next.childCount, 0);
+
     d3.select("#ts-call-graph")
         .attr("height", height)
         .attr("width", width);

@@ -1,7 +1,7 @@
 import { draw } from "./draw";
 import { GraphEdgeInput, GraphNode } from "./types";
 
-import { data } from "./XMatrixView";
+import { data } from "./INexus";
 
 const links: GraphEdgeInput[] = shuffle(data.links);
 const nodes: GraphNode[] =      shuffle(data.nodes);

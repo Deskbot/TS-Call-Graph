@@ -5,7 +5,7 @@ import { EasyMap } from "./EasyMap";
 export type NodeInput = {
     childCount: number,
     name: string,
-    neighbourCount: number,
+    parentCount: number,
     privacy: Privacy,
 };
 
@@ -49,7 +49,7 @@ export function build(digraph: Digraph<Property>): [NodeInput[], LinkInput[]] {
     }
 
     nodes.forEach(node => {
-        node.neighbourCount = node.childCount + (parentCounts.get(node.name) || 0);
+        node.parentCount = parentCounts.get(node.name) || 0;
     })
 
     return [nodes, links];
@@ -59,7 +59,7 @@ function propertyToNodeInput(property: Property, childCount: number, privacy: Pr
     return {
         childCount,
         name: property.name,
-        neighbourCount: 0,
+        parentCount: 0,
         privacy,
     };
 }
