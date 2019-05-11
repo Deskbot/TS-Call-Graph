@@ -22,10 +22,12 @@ function main() {
     const declarationExtractor = new ClassDeclarationExtractor(targetFilePath, targetClass);
     const digraphRepresentation = declarationExtractor.createDigraph();
 
-    console.log(digraphRepresentation);
-
     const [nodeInputs, edgesInputs] = d3Builder.build(digraphRepresentation);
 
-    console.log(JSON.stringify(nodeInputs));
-    console.log(JSON.stringify(edgesInputs));
+    const dataFileObject = {
+        nodes: nodeInputs,
+        links: edgesInputs,
+    };
+
+    console.log(JSON.stringify(dataFileObject));
 }

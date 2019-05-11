@@ -1,14 +1,15 @@
 import { Digraph } from "./Digraph";
 import { Property, Privacy } from "./Property";
-import * as ts from "typescript";
+import { EasyMap } from "./EasyMap";
 
-type NodeInput = {
+export type NodeInput = {
     childCount: number,
     name: string,
+    neighbourCount: number,
     privacy: Privacy,
 };
 
-type LinkInput = {
+export type LinkInput = {
     source: string,
     target: string,
 };
@@ -16,6 +17,7 @@ type LinkInput = {
 export function build(digraph: Digraph<Property>): [NodeInput[], LinkInput[]] {
     const nodes: NodeInput[] = [];
     const links: LinkInput[] = [];
+    const parentCounts: EasyMap<string, number> = new EasyMap();
 
     for (const [propertyFrom, propertiesTo] of digraph.entries) {
         if (!propertyFrom) {
@@ -28,19 +30,27 @@ export function build(digraph: Digraph<Property>): [NodeInput[], LinkInput[]] {
             propertyFrom.privacy
         ));
 
-        const fromId = propertyToNodeId(propertyFrom);
+        const fromId = propertyFrom.name;
         for (const to of propertiesTo) {
             // elements on the super class are undefined here
             if (!to) {
                 continue;
             }
 
+            const idOfTo = to.name;
+
+            parentCounts.change(idOfTo, 0, count => count + 1);
+
             links.push({
                 source: fromId,
-                target: propertyToNodeId(to),
+                target: idOfTo,
             });
         }
     }
+
+    nodes.forEach(node => {
+        node.neighbourCount = node.childCount + (parentCounts.get(node.name) || 0);
+    })
 
     return [nodes, links];
 }
@@ -48,11 +58,8 @@ export function build(digraph: Digraph<Property>): [NodeInput[], LinkInput[]] {
 function propertyToNodeInput(property: Property, childCount: number, privacy: Privacy): NodeInput {
     return {
         childCount,
-        name: propertyToNodeId(property),
+        name: property.name,
+        neighbourCount: 0,
         privacy,
     };
-}
-
-function propertyToNodeId(source: Property): string {
-    return source.name;
 }

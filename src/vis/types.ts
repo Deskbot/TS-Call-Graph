@@ -1,15 +1,8 @@
-import { Privacy } from "../lib/Property";
+import { NodeInput, LinkInput } from "../lib/D3Builder";
 
-export type GraphNode = {
-    childCount: number;
-    name: string;
-    privacy: Privacy;
-} & d3.SimulationNodeDatum;
+export type GraphNode = NodeInput & d3.SimulationNodeDatum;
 
-export type GraphEdgeInput = {
-    source: string;
-    target: string;
-} & d3.SimulationLinkDatum<GraphNode>;
+export type GraphEdgeInput = LinkInput & d3.SimulationLinkDatum<GraphNode>;
 
 export type GraphEdge = {
     source: GraphNode;
