@@ -3,8 +3,8 @@ import { GraphEdgeInput, GraphNode } from "./types";
 
 import { data } from "./XMatrixView";
 
-const links: GraphEdgeInput[] = shuffle(data.links.map(node => Object.create(node)));
-const nodes: GraphNode[] =      shuffle(data.nodes.map(node => Object.create(node)));
+const links: GraphEdgeInput[] = shuffle(data.links);
+const nodes: GraphNode[] =      shuffle(data.nodes);
 
 function shuffle<T>(arr: T[]): T[] {
     for (let i = 0; i < arr.length; i++) {
