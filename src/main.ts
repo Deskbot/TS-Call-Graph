@@ -1,4 +1,7 @@
+import * as fs from "fs";
+import * as path from "path";
 import * as process from "process";
+import * as ts from "typescript";
 
 import * as d3Builder from "./lib/D3Builder";
 import { ClassDeclarationExtractor } from "./lib/ClassDeclarationExtractor";
@@ -22,7 +25,7 @@ function main() {
         throw new MyError("Usage: arg1: target file path, arg2: target class name");
     }
 
-    const declarationExtractor = new ClassDeclarationExtractor(targetFilePath, targetClass);
+    const declarationExtractor = new ClassDeclarationExtractor(parseFile(targetFilePath), targetClass);
     const digraphRepresentation = declarationExtractor.createDigraph();
 
     const [nodeInputs, edgesInputs] = d3Builder.build(digraphRepresentation);
@@ -33,4 +36,15 @@ function main() {
     };
 
     console.log(JSON.stringify(dataFileObject));
+}
+
+function parseFile(targetFilePath: string): ts.SourceFile {
+    const targetFileData = fs.readFileSync(targetFilePath).toString();
+
+    return ts.createSourceFile(
+        path.basename(targetFilePath),
+        targetFileData,
+        ts.ScriptTarget.ES2017,
+        true,
+    );
 }
