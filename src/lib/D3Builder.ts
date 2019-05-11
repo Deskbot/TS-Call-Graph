@@ -1,9 +1,11 @@
 import { Digraph } from "./Digraph";
-import { Property } from "./Property";
+import { Property, Privacy } from "./Property";
+import * as ts from "typescript";
 
 type NodeInput = {
     childCount: number,
     name: string,
+    privacy: Privacy,
 };
 
 type LinkInput = {
@@ -20,7 +22,11 @@ export function build(digraph: Digraph<Property>): [NodeInput[], LinkInput[]] {
             continue; // ignore any undefined propertyfroms
         }
 
-        nodes.push(propertyToNodeInput(propertyFrom, propertiesTo.size));
+        nodes.push(propertyToNodeInput(
+            propertyFrom,
+            propertiesTo.size,
+            propertyFrom.privacy
+        ));
 
         const fromId = propertyToNodeId(propertyFrom);
         for (const to of propertiesTo) {
@@ -39,10 +45,11 @@ export function build(digraph: Digraph<Property>): [NodeInput[], LinkInput[]] {
     return [nodes, links];
 }
 
-function propertyToNodeInput(property: Property, childCount: number): NodeInput {
+function propertyToNodeInput(property: Property, childCount: number, privacy: Privacy): NodeInput {
     return {
         childCount,
         name: propertyToNodeId(property),
+        privacy,
     };
 }
 
