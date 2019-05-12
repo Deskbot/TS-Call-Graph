@@ -1,7 +1,7 @@
 import * as d3 from "d3";
 import * as ts from "typescript";
 
-import { GraphNode, GraphEdgeInput, GraphEdge } from "./types";
+import { GraphNode, GraphEdgeInput, GraphEdge } from "./d3-sub-types";
 
 const height = 9000;
 const width = 9000;
