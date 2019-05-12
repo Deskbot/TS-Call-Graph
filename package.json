@@ -9,7 +9,7 @@
     },
     "scripts": {
         "build": "./build.sh",
-        "start": "node -r source-map-support/register js/main"
+        "start": "node -r source-map-support/register out/js/main"
     },
     "keywords": [
         "TypeScript"
