@@ -50,3 +50,5 @@ From playing with the numbers, I don't believe there are ideal parameters for la
 I recommend modifying `ts/browser/draw.ts` to something that works for you.
 
 I have left some commented out forces there too for pulling up / pushing down nodes depending on how many parents and children they have, which could also be useful.
+
+With certain forces, it's possible for unconnected nodes to be pushed very far away from the rest of the graph and possibly disappear off the edge.
