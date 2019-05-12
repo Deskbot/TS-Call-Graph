@@ -9,6 +9,7 @@
     },
     "scripts": {
         "build": "./build.sh",
+        "build-single": "./build-single-file.sh",
         "start": "node -r source-map-support/register out/js/main"
     },
     "keywords": [
