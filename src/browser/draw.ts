@@ -7,7 +7,7 @@ const height = 9000;
 const width = 9000;
 
 const radius = 10;
-const LINK_FORCE = 15;
+const linkForce = 15;
 
 export function draw(nodes: GraphNode[], links: GraphEdgeInput[]) {
     const highestParentCount = nodes.reduce((highestCount, next) => highestCount > next.parentCount ? highestCount : next.parentCount, 0);
@@ -38,7 +38,7 @@ export function draw(nodes: GraphNode[], links: GraphEdgeInput[]) {
         )
         .force("edges", d3.forceLink<GraphNode, GraphEdgeInput>(links)
             .id(node => node.name)
-            .distance(radius * LINK_FORCE)
+            .distance(radius * linkForce)
             .strength(1))
         //.force("pull-nodes-with-more-children-down", d3.forceY<GraphNode>(0).strength(datum => datum.childCount / highestChildCount))
         //.force("pull-nodes-with-more-parents-up", d3.forceY<GraphNode>(height).strength(datum => datum.parentCount / highestParentCount))
