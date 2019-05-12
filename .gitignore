@@ -1,5 +1,4 @@
 **/.vscode
 **/node_modules/
 
-/js/
-/out/js/
+/out/
