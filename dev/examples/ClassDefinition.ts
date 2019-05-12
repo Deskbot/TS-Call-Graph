@@ -9,6 +9,7 @@ class Example1 {
         a: "a",
     };
     readonly field4 = 100;
+    field5 = "field5";
 
     static staticField1 = [];
 
@@ -35,12 +36,21 @@ class Example1 {
 
     method2() {
         this.field1;
-        this.field2;
+        this.property = "200";
         Example1.staticMethod;
     }
 
     method3() {
 
+    }
+
+    method4() {
+        this.property = "200";
+        this.field5 = this.property;
+    }
+
+    method5() {
+        this.field5 = this.property;
     }
 
     get property() {
