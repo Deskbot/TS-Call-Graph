@@ -3,9 +3,9 @@ import * as path from "path";
 import * as process from "process";
 import * as ts from "typescript";
 
-import * as d3Builder from "./graph-gen/D3Builder";
+import * as d3Builder from "./graph-gen/d3-builder";
 import { ClassDeclarationExtractor } from "./graph-gen/ClassDeclarationExtractor";
-import { MyError } from "./util/error";
+import { MyError } from "./util/MyError";
 
 main();
 

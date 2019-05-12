@@ -1,9 +1,9 @@
 import * as ts from "typescript";
 
 import { Digraph } from "../util/Digraph";
-import { MyError } from "../util/error";
+import { MyError } from "../util/MyError";
 import { boolify } from "../util/function";
-import { PropertyType, Property } from "./Property";
+import { PropertyType, Property } from "./property";
 import { depthFirstSearch } from "../util/traversal";
 
 type ClassFeatures = {

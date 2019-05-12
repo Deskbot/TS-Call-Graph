@@ -1,6 +1,6 @@
 import * as ts from "typescript";
 
-import * as d3Builder from "../graph-gen/D3Builder";
+import * as d3Builder from "../graph-gen/d3-builder";
 
 import { draw } from "./draw";
 import { ClassDeclarationExtractor } from "../graph-gen/ClassDeclarationExtractor";
