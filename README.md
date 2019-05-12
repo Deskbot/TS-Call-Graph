@@ -5,6 +5,16 @@ A program that creates interactable graphs of a TypeScript class.
 
 The nodes and edges of the graph are laid out by applying forces between them using the JavaScript module `d3`.
 
+Install
+-------
+
+```
+git clone https://github.com/Deskbot/TS-Call-Graph
+cd TS-Call-Graph
+sudo npm install -g typescript
+npm install
+```
+
 Multi File Build
 ----------------
 
