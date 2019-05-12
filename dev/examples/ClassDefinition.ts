@@ -2,7 +2,13 @@ declare class Declaration {
     field: number;
 }
 
-class Example1 {
+class Parent {
+    hello() {
+        console.log("hi")
+    }
+}
+
+class Example1 extends Parent {
     public field1 = "field";
     private field2 = [1,2,3];
     protected field3 = {
@@ -14,6 +20,7 @@ class Example1 {
     static staticField1 = [];
 
     constructor() {
+        super();
         this.field1 = "field";
         let a = this.field1;
         this.field2[2] = 1;
@@ -51,6 +58,7 @@ class Example1 {
 
     method5() {
         this.field5 = this.property;
+        super.hello();
     }
 
     get property() {
