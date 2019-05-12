@@ -5,12 +5,6 @@ import * as d3Builder from "../graph-gen/D3Builder";
 import { draw } from "./draw";
 import { ClassDeclarationExtractor } from "../graph-gen/ClassDeclarationExtractor";
 
-type FileReaderLoadEvent = ProgressEvent & {
-    target: {
-        result: string
-    }
-};
-
 const controlsDiv = document.getElementById("controls") as HTMLDivElement;
 const startInput = document.getElementById("start-button") as HTMLButtonElement;
 const fileInput = document.getElementById("file") as HTMLInputElement;
