@@ -1,9 +1,9 @@
 import * as ts from "typescript";
 
-import * as d3Builder from "../lib/D3Builder";
+import * as d3Builder from "../graph-gen/D3Builder";
 
 import { draw } from "./draw";
-import { ClassDeclarationExtractor } from "../lib/ClassDeclarationExtractor";
+import { ClassDeclarationExtractor } from "../graph-gen/ClassDeclarationExtractor";
 
 type FileReaderLoadEvent = ProgressEvent & {
     target: {

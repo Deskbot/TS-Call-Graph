@@ -1,4 +1,4 @@
-import { NodeInput, LinkInput } from "../lib/D3Builder";
+import { NodeInput, LinkInput } from "./graph-gen/D3Builder";
 
 export type GraphNode = NodeInput & d3.SimulationNodeDatum;
 
