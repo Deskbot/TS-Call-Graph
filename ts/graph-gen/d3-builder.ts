@@ -39,6 +39,7 @@ export function build(digraph: Digraph<Property>): [NodeInput[], LinkInput[]] {
 
             const idOfTo = to.name;
 
+            // update the parent count of the child node
             parentCounts.change(idOfTo, 0, count => count + 1);
 
             links.push({
@@ -48,6 +49,7 @@ export function build(digraph: Digraph<Property>): [NodeInput[], LinkInput[]] {
         }
     }
 
+    // set the parentCount on each node
     nodes.forEach(node => {
         node.parentCount = parentCounts.get(node.name) || 0;
     })
