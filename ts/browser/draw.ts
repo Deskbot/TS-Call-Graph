@@ -3,8 +3,8 @@ import * as ts from "typescript";
 
 import { GraphNode, GraphEdgeInput, GraphEdge } from "./d3-sub-types";
 
-const height = 9000;
-const width = 9000;
+const height = 2000;
+const width = 2000;
 
 const radius = 10;
 const linkForce = 15;
