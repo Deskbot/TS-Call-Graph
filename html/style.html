@@ -1,0 +1,51 @@
+<style>
+    body {
+        margin: 0;
+    }
+
+    circle {
+        fill: #cc2222;
+    }
+
+    circle.private {
+        stroke: black;
+        stroke-width: 2px;
+    }
+
+    circle.protected {
+        stroke: lightgrey;
+        stroke-width: 2px;
+    }
+
+    html {
+        background-color: #7777AA;
+        -moz-user-select: none;
+        -webkit-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+    }
+
+    line {
+        pointer-events: none;
+        stroke: #0000aa;
+        stroke-width: 2px;
+    }
+
+    text {
+        fill: white;
+        font-family: monospace;
+        font-size: 18px;
+        font-weight: bold;
+        text-shadow: 0px 0px 4px black;
+    }
+
+    #arrow-head polygon {
+        border-color: black;
+        fill: #0000aa;
+    }
+
+    #ts-call-graph {
+        display: block;
+        margin: auto;
+    }
+</style>

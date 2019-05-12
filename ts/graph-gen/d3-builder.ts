@@ -1,6 +1,6 @@
-import { Digraph } from "./Digraph";
-import { Property, Privacy } from "./Property";
-import { EasyMap } from "./EasyMap";
+import { Digraph } from "../util/Digraph";
+import { Property, Privacy } from "./property";
+import { EasyMap } from "../util/EasyMap";
 
 export type NodeInput = {
     childCount: number,

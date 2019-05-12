@@ -1,10 +1,10 @@
 import * as ts from "typescript";
 
-import { Digraph } from "./Digraph";
-import { MyError } from "./error";
-import { boolify } from "./function";
-import { PropertyType, Property } from "./Property";
-import { depthFirstSearch } from "./traversal";
+import { Digraph } from "../util/Digraph";
+import { MyError } from "../util/MyError";
+import { boolify } from "../util/function";
+import { PropertyType, Property } from "./property";
+import { depthFirstSearch } from "../util/traversal";
 
 type ClassFeatures = {
     constructor: Maybe<Property>,

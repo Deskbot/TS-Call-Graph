@@ -1,15 +1,9 @@
 import * as ts from "typescript";
 
-import * as d3Builder from "../lib/D3Builder";
+import * as d3Builder from "../graph-gen/d3-builder";
 
 import { draw } from "./draw";
-import { ClassDeclarationExtractor } from "../lib/ClassDeclarationExtractor";
-
-type FileReaderLoadEvent = ProgressEvent & {
-    target: {
-        result: string
-    }
-};
+import { ClassDeclarationExtractor } from "../graph-gen/ClassDeclarationExtractor";
 
 const controlsDiv = document.getElementById("controls") as HTMLDivElement;
 const startInput = document.getElementById("start-button") as HTMLButtonElement;
