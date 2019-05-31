@@ -39,7 +39,7 @@ export class OneToManyMap<K,V> {
         if (mappedTo) {
             mappedTo.add(v);
         } else {
-            this.map.set(k, new Set().add(v));
+            this.map.set(k, new Set<V>().add(v));
         }
 
         return this;

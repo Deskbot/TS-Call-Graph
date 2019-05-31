@@ -11,7 +11,7 @@ export class Digraph<N> {
         if (mappedTo) {
             mappedTo.add(n2);
         } else {
-            this.nodeToNodes.set(n1, new Set().add(n2));
+            this.nodeToNodes.set(n1, new Set<N>().add(n2));
         }
 
         return this;
