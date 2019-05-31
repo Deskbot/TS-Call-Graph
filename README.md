@@ -11,8 +11,8 @@ Install
 ```
 git clone https://github.com/Deskbot/TS-Call-Graph
 cd TS-Call-Graph
-sudo npm install -g typescript
 npm install
+sudo npm install -g npx
 ```
 
 Multi File Build

@@ -17,6 +17,6 @@ mkdir -p out/js out/multi-file
     ) > $BUILD_SH_LOCATION/out/multi-file/index.html
 ) &
 
-(tsc &&
+(npx tsc &&
     npx browserify out/js/browser/main.js > out/multi-file/main.js
 )
