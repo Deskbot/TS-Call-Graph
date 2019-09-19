@@ -10,3 +10,5 @@ Ideas
 * Create a webpage from the terminal that only contains the drawing code and not the parsing code
 * The edge from a node to itself should be drawn with a curved line
 * Automatic node ordering top to bottom by fewest parents at the top, using most children first as a tie breaker
+* Don't put all of d3 in the package
+
