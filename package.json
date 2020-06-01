@@ -23,12 +23,12 @@
     "homepage": "https://github.com/Deskbot/TS-Call-Graph#readme",
     "devDependencies": {
         "@types/d3": "^5.7.2",
-        "@types/node": "^11.13.13",
-        "browserify": "^16.2.3"
+        "@types/node": "^11.15.14",
+        "browserify": "^16.5.1"
     },
     "dependencies": {
-        "d3": "^5.9.2",
-        "source-map-support": "^0.5.12",
-        "typescript": "^3.5.1"
+        "d3": "^5.16.0",
+        "source-map-support": "^0.5.19",
+        "typescript": "^3.9.3"
     }
 }
